@@ -51,6 +51,18 @@ public class User {
 
     @Embedded
     private EmailAuth emailAuth;
+
+    public void setEmailAuthKey(String emailAuthKey) {
+        emailAuth.setEmailKey(emailAuthKey);
+    }
+
+    public String getEmailAuthKey() {
+        return emailAuth.getEmailKey();
+    }
+
+    public void authorizeUser() {
+        emailAuth.setEmailAuth(true);
+    }
 }
 
 
