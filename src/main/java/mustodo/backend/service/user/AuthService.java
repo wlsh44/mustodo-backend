@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.user.SignUpRequestDto;
 import mustodo.backend.entity.User;
+import mustodo.backend.entity.embedded.EmailAuth;
+import mustodo.backend.enums.Role;
 import mustodo.backend.exception.UserException;
 import mustodo.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,10 +40,13 @@ public class AuthService {
     }
 
     private User getUser(SignUpRequestDto dto, String encodedPassword) {
+        EmailAuth emailAuth = new EmailAuth("", false);
         return User.builder()
                 .email(dto.getEmail())
                 .name(dto.getName())
                 .password(encodedPassword)
+                .role(Role.USER)
+                .emailAuth(emailAuth)
                 .build();
     }
 
