@@ -8,6 +8,7 @@ import mustodo.backend.entity.embedded.EmailAuth;
 import mustodo.backend.enums.Role;
 import mustodo.backend.exception.UserException;
 import mustodo.backend.repository.UserRepository;
+import mustodo.backend.service.user.mail.EmailAuthService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailAuthService emailAuthService;
+
 
     public MessageDto signUp(SignUpRequestDto dto) {
         validateTermsAndCondition(dto.isTermsAndConditions());
@@ -30,17 +33,20 @@ public class AuthService {
         validatePassword(dto);
 
         String encodedPassword = encodePassword(dto.getPassword());
-        User user = getUser(dto, encodedPassword);
+        User user = toUserEntity(dto, encodedPassword);
 
-        userRepository.save(user);
+        String emailAuthKey = emailAuthService.sendAuthMail(user);
+
+        User saveUser = userRepository.save(user);
+        saveUser.setEmailAuthKey(emailAuthKey);
 
         return MessageDto.builder()
                 .message(SIGN_UP_SUCCESS)
                 .build();
     }
 
-    private User getUser(SignUpRequestDto dto, String encodedPassword) {
-        EmailAuth emailAuth = new EmailAuth("", false);
+    private User toUserEntity(SignUpRequestDto dto, String encodedPassword) {
+        EmailAuth emailAuth = new EmailAuth(null, false);
         return User.builder()
                 .email(dto.getEmail())
                 .name(dto.getName())

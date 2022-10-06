@@ -46,13 +46,12 @@ public class EmailAuthService {
         }
     }
 
-    public String sendMail(User user) {
+    public String sendAuthMail(User user) {
         String emailKey = keyGenerator.createKey();
 
         try {
             MimeMessage message = createMessage(user.getEmail(), emailKey);
             javaMailSender.send(message);
-            user.setEmailAuthKey(emailKey);
             log.info("이메일 전송, email: {} 인증 번호: {}", user.getEmail(), emailKey);
         } catch (MailException e) {
             log.error("이메일 전송 실패, email: {}", user.getEmail());
