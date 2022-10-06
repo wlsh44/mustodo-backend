@@ -26,4 +26,5 @@ public class SignUpRequestDto {
 
     @NotNull
     private boolean isTermsAndConditions;
+
 }
