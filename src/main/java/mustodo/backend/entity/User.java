@@ -1,5 +1,6 @@
 package mustodo.backend.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,6 +22,7 @@ import javax.persistence.Id;
 @Entity
 @Builder
 @EqualsAndHashCode(of = "id")
+@AllArgsConstructor
 @NoArgsConstructor
 public class User {
 
