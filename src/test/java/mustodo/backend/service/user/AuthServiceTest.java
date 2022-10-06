@@ -2,8 +2,11 @@ package mustodo.backend.service.user;
 
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.user.SignUpRequestDto;
+import mustodo.backend.entity.User;
+import mustodo.backend.entity.embedded.EmailAuth;
 import mustodo.backend.exception.UserException;
 import mustodo.backend.repository.UserRepository;
+import mustodo.backend.service.user.mail.EmailAuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +16,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_EMAIL;
+import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
+import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SEND_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +39,12 @@ class AuthServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @Mock
+    EmailAuthService emailAuthService;
+
     SignUpRequestDto dto;
+
+    User user;
 
     @Test
     @DisplayName("회원가입 성공")
@@ -46,10 +57,17 @@ class AuthServiceTest {
                 .passwordConfirm("test")
                 .isTermsAndConditions(true)
                 .build();
+        user = User.builder()
+                .emailAuth(new EmailAuth(null, false))
+                .build();
         given(userRepository.existsByEmail(dto.getEmail()))
                 .willReturn(false);
+        given(userRepository.save(user))
+                .willReturn(user);
         given(passwordEncoder.encode(dto.getPassword()))
                 .willReturn("encodedPassword");
+        given(emailAuthService.sendAuthMail(any()))
+                .willReturn("123456");
 
         //when
         MessageDto messageDto = authService.signUp(dto);
@@ -114,5 +132,27 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.signUp(dto))
                 .isInstanceOf(UserException.class)
                 .hasMessage(PASSWORD_CONFIRM_FAILED.getErrMsg());
+    }
+
+    @Test
+    @DisplayName("회원가입 실패: 인증 메일 전송 실패")
+    void signUpFailedTest_authMailCreateFailed() {
+        //given
+        dto = SignUpRequestDto.builder()
+                .email("test")
+                .name("test")
+                .password("test")
+                .passwordConfirm("test")
+                .isTermsAndConditions(true)
+                .build();
+        given(userRepository.existsByEmail(dto.getEmail()))
+                .willReturn(false);
+        given(emailAuthService.sendAuthMail(any()))
+                .willThrow(new UserException(EMAIL_AUTH_SEND_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
+
+        //when then
+        assertThatThrownBy(() -> authService.signUp(dto))
+                .isInstanceOf(UserException.class)
+                .hasMessage(EMAIL_MESSAGE_CREATE_FAILED.getErrMsg());
     }
 }

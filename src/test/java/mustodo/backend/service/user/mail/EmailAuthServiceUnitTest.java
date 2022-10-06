@@ -97,10 +97,9 @@ class EmailAuthServiceUnitTest {
                 .willReturn("admin@admin.com");
 
         //when
-        String emailKey = emailAuthService.sendMail(user);
+        String emailKey = emailAuthService.sendAuthMail(user);
 
         //then
         assertThat(emailKey).isEqualTo(expectedEmailKey);
-        assertThat(user.getEmailAuthKey()).isEqualTo(expectedEmailKey);
     }
 }
