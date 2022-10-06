@@ -63,6 +63,10 @@ public class User {
     public void authorizeUser() {
         emailAuth.setEmailAuth(true);
     }
+
+    public boolean isAuthorizedUser() {
+        return emailAuth.isEmailAuth();
+    }
 }
 
 

@@ -7,7 +7,6 @@ import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.user.EmailAuthDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.exception.UserException;
-import mustodo.backend.repository.UserRepository;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Random;
 
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_SEND_FAILED;
@@ -28,8 +26,6 @@ import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
 @Service
 @RequiredArgsConstructor
 public class EmailAuthService {
-
-    public static final int AUTH_KEY_LENGTH = 6;
 
     private final EmailConfig emailConfig;
     private final JavaMailSender javaMailSender;
