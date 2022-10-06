@@ -17,34 +17,17 @@ import javax.mail.internet.MimeMessage;
 
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_SEND_FAILED;
-import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SEND_FAILED;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmailAuthService {
+public class EmailAuthSender {
 
     private final EmailConfig emailConfig;
     private final JavaMailSender javaMailSender;
     private final EmailKeyGenerator keyGenerator;
 
-    public MessageDto authUser(User user, EmailAuthDto dto) {
-        String emailAuthKey = user.getEmailAuthKey();
-        validateEmailKey(dto, emailAuthKey);
-        user.authorizeUser();
-        return MessageDto.builder()
-                .message(EMAIL_AUTH_SUCCESS)
-                .build();
-    }
-
-    private void validateEmailKey(EmailAuthDto dto, String emailAuthKey) {
-        if (!dto.getAuthKey().equals(emailAuthKey)) {
-            throw new UserException(EMAIL_AUTH_FAILED, INVALID_EMAIL_AUTH_KEY);
-        }
-    }
 
     public String sendAuthMail(User user) {
         String emailKey = keyGenerator.createKey();
