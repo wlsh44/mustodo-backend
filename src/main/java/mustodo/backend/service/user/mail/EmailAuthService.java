@@ -1,4 +1,4 @@
-package mustodo.backend.service.user;
+package mustodo.backend.service.user.mail;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,7 @@ public class EmailAuthService {
 
     private final EmailConfig emailConfig;
     private final JavaMailSender javaMailSender;
+    private final EmailKeyGenerator keyGenerator;
 
     public MessageDto authUser(User user, EmailAuthDto dto) {
         String emailAuthKey = user.getEmailAuthKey();
@@ -50,7 +51,8 @@ public class EmailAuthService {
     }
 
     public String sendMessage(User user) {
-        String emailKey = createKey();
+        String emailKey = keyGenerator.createKey();
+
         try {
             MimeMessage message = createMessage(user.getEmail(), emailKey);
             javaMailSender.send(message);
@@ -74,17 +76,5 @@ public class EmailAuthService {
         message.setText(authMessage, "UTF-8", "html");
         message.setFrom(new InternetAddress(emailConfig.getAdminId(), emailConfig.getAdmin()));
         return message;
-    }
-
-    private String createKey() {
-        StringBuffer sb = new StringBuffer();
-
-        Random random = new Random();
-        for (int i = 0; i < AUTH_KEY_LENGTH; i++) {
-            int num = random.nextInt(10);
-
-            sb.append(num);
-        }
-        return sb.toString();
     }
 }
