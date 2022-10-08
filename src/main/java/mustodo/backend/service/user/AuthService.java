@@ -1,6 +1,7 @@
 package mustodo.backend.service.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.user.EmailAuthDto;
 import mustodo.backend.dto.user.SignUpRequestDto;
@@ -12,6 +13,7 @@ import mustodo.backend.repository.UserRepository;
 import mustodo.backend.service.user.mail.EmailAuthSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_EMAIL;
 import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
@@ -23,6 +25,7 @@ import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -31,6 +34,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailAuthSender emailAuthSender;
 
+    @Transactional
     public MessageDto authorizeUser(EmailAuthDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new UserException(EMAIL_AUTH_FAILED, NOT_EXIST_EMAIL));
@@ -48,6 +52,7 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public MessageDto signUp(SignUpRequestDto dto) {
         validateTermsAndCondition(dto.isTermsAndConditions());
         validateEmail(dto);
@@ -57,6 +62,7 @@ public class AuthService {
         User user = toUserEntity(dto, encodedPassword);
 
         String emailAuthKey = emailAuthSender.sendAuthMail(user);
+        log.info("비번 길이: {}", encodedPassword.length());
 
         User saveUser = userRepository.save(user);
         saveUser.setEmailAuthKey(emailAuthKey);
