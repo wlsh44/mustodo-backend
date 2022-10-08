@@ -26,7 +26,6 @@ import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY
 import static mustodo.backend.enums.error.SignUpErrorCode.NOT_EXIST_EMAIL;
 import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SEND_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
@@ -134,7 +133,7 @@ class AuthServiceTest {
                     .name("test")
                     .password("test")
                     .passwordConfirm("test")
-                    .isTermsAndConditions(true)
+                    .termsAndConditions(true)
                     .build();
         }
 
@@ -170,7 +169,7 @@ class AuthServiceTest {
                     .name("test")
                     .password("test")
                     .passwordConfirm("test")
-                    .isTermsAndConditions(false)
+                    .termsAndConditions(false)
                     .build();
 
             //when then
@@ -201,7 +200,7 @@ class AuthServiceTest {
                     .name("test")
                     .password("test")
                     .passwordConfirm("asdfasdf")
-                    .isTermsAndConditions(true)
+                    .termsAndConditions(true)
                     .build();
             given(userRepository.existsByEmail(dto.getEmail()))
                     .willReturn(false);
