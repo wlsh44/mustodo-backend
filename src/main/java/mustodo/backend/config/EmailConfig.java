@@ -24,7 +24,7 @@ public class EmailConfig {
     private String starttlsRequired;
     private String socketFactoryClass;
     private String socketFactoryFallback;
-    private String socketFactoryPort;
+    private int socketFactoryPort;
     private String adminId;
     private String adminPassword;
     private String admin;

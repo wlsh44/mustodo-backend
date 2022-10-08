@@ -37,6 +37,7 @@ public class EmailAuthSender {
             javaMailSender.send(message);
             log.info("이메일 전송, email: {} 인증 번호: {}", user.getEmail(), emailKey);
         } catch (MailException e) {
+            log.error(e.getMessage());
             log.error("이메일 전송 실패, email: {}", user.getEmail());
             throw new UserException(EMAIL_AUTH_SEND_FAILED, EMAIL_SEND_FAILED);
         } catch (Exception e) {
