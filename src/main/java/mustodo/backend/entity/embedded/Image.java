@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -15,12 +14,7 @@ import javax.persistence.Embeddable;
 @EqualsAndHashCode
 public class Image {
 
-    @Column(nullable = false)
     private String fileName;
-
-    @Column(nullable = false)
     private String fileOriName;
-
-    @Column(nullable = false)
     private String fileUrl;
 }
