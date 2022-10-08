@@ -3,13 +3,11 @@ package mustodo.backend.service.user.mail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.config.EmailConfig;
-import mustodo.backend.dto.MessageDto;
-import mustodo.backend.dto.user.EmailAuthDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.exception.UserException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
@@ -20,7 +18,7 @@ import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_SEND_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SEND_FAILED;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class EmailAuthSender {
 

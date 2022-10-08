@@ -62,7 +62,6 @@ public class AuthService {
         User user = toUserEntity(dto, encodedPassword);
 
         String emailAuthKey = emailAuthSender.sendAuthMail(user);
-        log.info("비번 길이: {}", encodedPassword.length());
 
         User saveUser = userRepository.save(user);
         saveUser.setEmailAuthKey(emailAuthKey);
