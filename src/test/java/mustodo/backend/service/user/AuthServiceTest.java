@@ -20,8 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_EMAIL;
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_NAME;
+import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
+import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_NAME;
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
 import static mustodo.backend.enums.error.SignUpErrorCode.NOT_EXIST_EMAIL;
@@ -189,7 +189,7 @@ class AuthServiceTest {
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
                     .isInstanceOf(UserException.class)
-                    .hasMessage(ALREADY_EXIST_EMAIL.getErrMsg());
+                    .hasMessage(ALREADY_EXISTS_EMAIL.getErrMsg());
         }
 
         @Test
@@ -204,7 +204,7 @@ class AuthServiceTest {
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
                     .isInstanceOf(UserException.class)
-                    .hasMessage(ALREADY_EXIST_NAME.getErrMsg());
+                    .hasMessage(ALREADY_EXISTS_NAME.getErrMsg());
         }
 
         @Test
