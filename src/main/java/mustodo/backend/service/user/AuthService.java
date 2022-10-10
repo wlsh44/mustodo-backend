@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_EMAIL;
+import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_NAME;
 import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
 import static mustodo.backend.enums.error.SignUpErrorCode.NOT_EXIST_EMAIL;
 import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
@@ -54,9 +55,7 @@ public class AuthService {
 
     @Transactional
     public MessageDto signUp(SignUpRequestDto dto) {
-        validateTermsAndCondition(dto.isTermsAndConditions());
-        validateEmail(dto);
-        validatePassword(dto);
+        validateSignUpDto(dto);
 
         String encodedPassword = encodePassword(dto.getPassword());
         User user = toUserEntity(dto, encodedPassword);
@@ -84,6 +83,19 @@ public class AuthService {
 
     private String encodePassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    private void validateSignUpDto(SignUpRequestDto dto) {
+        validateTermsAndCondition(dto.isTermsAndConditions());
+        validateEmail(dto);
+        validateName(dto);
+        validatePassword(dto);
+    }
+
+    private void validateName(SignUpRequestDto dto) {
+        if (userRepository.existsByName(dto.getName())) {
+            throw new UserException(SIGN_UP_FAILED, ALREADY_EXIST_NAME);
+        }
     }
 
     private void validatePassword(SignUpRequestDto dto) {
