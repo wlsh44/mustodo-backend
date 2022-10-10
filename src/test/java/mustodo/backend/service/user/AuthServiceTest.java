@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_EMAIL;
+import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXIST_NAME;
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
 import static mustodo.backend.enums.error.SignUpErrorCode.NOT_EXIST_EMAIL;
@@ -82,7 +83,7 @@ class AuthServiceTest {
             MessageDto messageDto = authService.authorizeUser(dto);
 
             //then
-            assertThat(messageDto.getMessage()).isEqualTo(EMAIL_AUTH_SUCCESS);
+            assertThat(messageDto.getMessage()).isEqualTo(EMAIL_AUTH_SUCCESS.getResMsg());
             assertThat(user.isAuthorizedUser()).isTrue();
         }
 
@@ -157,7 +158,7 @@ class AuthServiceTest {
             MessageDto messageDto = authService.signUp(dto);
 
             //then
-            assertThat(messageDto.getMessage()).isEqualTo(SIGN_UP_SUCCESS);
+            assertThat(messageDto.getMessage()).isEqualTo(SIGN_UP_SUCCESS.getResMsg());
         }
 
         @Test
@@ -189,6 +190,21 @@ class AuthServiceTest {
             assertThatThrownBy(() -> authService.signUp(dto))
                     .isInstanceOf(UserException.class)
                     .hasMessage(ALREADY_EXIST_EMAIL.getErrMsg());
+        }
+
+        @Test
+        @DisplayName("회원가입 실패: 이미 있는 이름")
+        void signUpFailedTest_alreadyExistName() {
+            //given
+            given(userRepository.existsByEmail(dto.getEmail()))
+                    .willReturn(false);
+            given(userRepository.existsByName(dto.getName()))
+                    .willReturn(true);
+
+            //when then
+            assertThatThrownBy(() -> authService.signUp(dto))
+                    .isInstanceOf(UserException.class)
+                    .hasMessage(ALREADY_EXIST_NAME.getErrMsg());
         }
 
         @Test
