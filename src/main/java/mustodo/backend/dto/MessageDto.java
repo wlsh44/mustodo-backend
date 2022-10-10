@@ -1,10 +1,14 @@
 package mustodo.backend.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import mustodo.backend.enums.response.ResponseMsg;
 
 @Getter
+@EqualsAndHashCode
+@NoArgsConstructor
 @AllArgsConstructor
 public class MessageDto {
 

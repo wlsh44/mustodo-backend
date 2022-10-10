@@ -22,10 +22,10 @@ public class UserControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<MessageDto> bindingException(BindException e) {
+    public ResponseEntity<ErrorDto> bindingException(BindException e) {
         String errMsg = e.getMessage();
         log.error(errMsg);
-        MessageDto message = MessageDto
+        ErrorDto message = ErrorDto
                 .builder()
                 .message(INVALID_ARGUMENT_ERROR)
                 .build();

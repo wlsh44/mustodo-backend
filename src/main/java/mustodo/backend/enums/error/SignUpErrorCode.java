@@ -1,8 +1,8 @@
 package mustodo.backend.enums.error;
 
 public enum SignUpErrorCode implements ErrorCode {
-    ALREADY_EXIST_EMAIL("이미 존재하는 이메일 입니다."),
-    ALREADY_EXIST_NAME("이미 존재하는 이름 입니다."),
+    ALREADY_EXISTS_EMAIL("이미 존재하는 이메일 입니다."),
+    ALREADY_EXISTS_NAME("이미 존재하는 이름 입니다."),
     PASSWORD_CONFIRM_FAILED("비밀번호 검증에 실패했습니다."),
     UNCHECK_TERMS_AND_CONDITION("약관에 동의하지 않았습니다."),
     EMAIL_SEND_FAILED("이메일 전송에 실패하였습니다."),
