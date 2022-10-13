@@ -109,7 +109,13 @@ class UserControllerTest {
         @DisplayName("회원가입 실패 - 이메일 형식 오류")
         void failTest_bindingException() throws Exception {
             //given
-            dto.setEmail("test");
+            dto = SignUpRequestDto.builder()
+                    .email("test")
+                    .name("test")
+                    .password("test")
+                    .passwordConfirm("test")
+                    .termsAndConditions(true)
+                    .build();
             ErrorDto expect = ErrorDto.builder()
                     .message(INVALID_ARGUMENT_ERROR)
                     .build();
@@ -260,7 +266,10 @@ class UserControllerTest {
         @DisplayName("유저 인증 실패 - 잘못된 형식")
         void failTest_invalidArgument() throws Exception {
             //given
-            dto.setAuthKey("123");
+            dto = EmailAuthDto.builder()
+                    .email("test@test.test")
+                    .authKey("123")
+                    .build();
             ErrorDto expect = ErrorDto.builder()
                     .message(INVALID_ARGUMENT_ERROR)
                     .build();
