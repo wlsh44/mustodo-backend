@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.user.EmailAuthDto;
+import mustodo.backend.dto.user.LoginDto;
 import mustodo.backend.dto.user.SignUpRequestDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.entity.embedded.EmailAuth;
 import mustodo.backend.enums.Role;
+import mustodo.backend.enums.error.LoginErrorCode;
+import mustodo.backend.enums.error.SignUpErrorCode;
 import mustodo.backend.exception.UserException;
 import mustodo.backend.repository.UserRepository;
 import mustodo.backend.service.user.mail.EmailAuthSender;
@@ -15,14 +18,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static mustodo.backend.enums.error.LoginErrorCode.NOT_AUTHORIZED_USER;
+import static mustodo.backend.enums.error.LoginErrorCode.PASSWORD_NOT_CORRECT;
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_NAME;
 import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
-import static mustodo.backend.enums.error.SignUpErrorCode.NOT_EXIST_EMAIL;
 import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
+import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_FAILED;
+import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
 
@@ -36,9 +42,33 @@ public class AuthService {
     private final EmailAuthSender emailAuthSender;
 
     @Transactional
+    public User login(LoginDto dto) {
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new UserException(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
+        validatePassword(dto, user.getPassword());
+        validateAuthorizedUser(user);
+
+        return user;
+    }
+
+    private void validateAuthorizedUser(User user) {
+        if (!user.isAuthorizedUser()) {
+            String emailAuthKey = emailAuthSender.sendAuthMail(user);
+            user.setEmailAuthKey(emailAuthKey);
+            throw new UserException(LOGIN_FAILED, NOT_AUTHORIZED_USER);
+        }
+    }
+
+    private void validatePassword(LoginDto dto, String password) {
+        if (!passwordEncoder.matches(dto.getPassword(), password)) {
+            throw new UserException(LOGIN_FAILED, PASSWORD_NOT_CORRECT);
+        }
+    }
+
+    @Transactional
     public MessageDto authorizeUser(EmailAuthDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new UserException(EMAIL_AUTH_FAILED, NOT_EXIST_EMAIL));
+                .orElseThrow(() -> new UserException(EMAIL_AUTH_FAILED, SignUpErrorCode.NOT_EXIST_EMAIL));
         validateEmailKey(dto, user.getEmailAuthKey());
 
         user.authorizeUser();
