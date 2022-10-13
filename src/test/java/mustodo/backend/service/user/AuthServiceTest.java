@@ -2,9 +2,11 @@ package mustodo.backend.service.user;
 
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.user.EmailAuthDto;
+import mustodo.backend.dto.user.LoginDto;
 import mustodo.backend.dto.user.SignUpRequestDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.entity.embedded.EmailAuth;
+import mustodo.backend.enums.error.LoginErrorCode;
 import mustodo.backend.exception.UserException;
 import mustodo.backend.repository.UserRepository;
 import mustodo.backend.service.user.mail.EmailAuthSender;
@@ -51,6 +53,117 @@ class AuthServiceTest {
     EmailAuthSender emailAuthSender;
 
     User user;
+
+    @Nested
+    @DisplayName("로그인 테스트")
+    class LoginTest {
+
+        LoginDto dto;
+        String email;
+        String password;
+        @BeforeEach
+        void init() {
+            email = "test@test.test";
+            password = "test";
+        }
+        @Test
+        @DisplayName("로그인 성공")
+        void loginSuccessTest() {
+            //given
+            dto = LoginDto.builder()
+                    .email(email)
+                    .password(password)
+                    .build();
+            user = User.builder()
+                    .id(1L)
+                    .email(email)
+                    .emailAuth(new EmailAuth("123123", true))
+                    .password(password)
+                    .name("test")
+                    .build();
+            given(userRepository.findByEmail(email))
+                    .willReturn(Optional.of(user));
+            given(passwordEncoder.matches(dto.getPassword(), user.getPassword()))
+                    .willReturn(true);
+
+            //when
+            User loginUser = authService.login(dto);
+
+            assertThat(loginUser).isEqualTo(user);
+        }
+
+        @Test
+        @DisplayName("로그인 실패 - 비밀번호 틀림")
+        void loginFailTest_passwordNotCorrect() {
+            //given
+            dto = LoginDto.builder()
+                    .email(email)
+                    .password(password)
+                    .build();
+            user = User.builder()
+                    .id(1L)
+                    .email(email)
+                    .emailAuth(new EmailAuth("123123", true))
+                    .password(password)
+                    .name("test")
+                    .build();
+            given(userRepository.findByEmail(email))
+                    .willReturn(Optional.of(user));
+            given(passwordEncoder.matches(dto.getPassword(), user.getPassword()))
+                    .willReturn(false);
+
+            //when then
+            assertThatThrownBy(() -> authService.login(dto))
+                    .isInstanceOf(UserException.class)
+                    .hasMessage(LoginErrorCode.PASSWORD_NOT_CORRECT.getErrMsg());
+        }
+
+        @Test
+        @DisplayName("로그인 실패 - 인증 안 된 유저")
+        void loginFailTest_unAuthorizedUser() {
+            //given
+            dto = LoginDto.builder()
+                    .email(email)
+                    .password(password)
+                    .build();
+            user = User.builder()
+                    .id(1L)
+                    .email(email)
+                    .emailAuth(new EmailAuth("123123", false))
+                    .password(password)
+                    .name("test")
+                    .build();
+            given(userRepository.findByEmail(email))
+                    .willReturn(Optional.of(user));
+            given(passwordEncoder.matches(dto.getPassword(), user.getPassword()))
+                    .willReturn(true);
+            given(emailAuthSender.sendAuthMail(user))
+                    .willReturn("123456");
+
+            //when then
+            assertThatThrownBy(() -> authService.login(dto))
+                    .isInstanceOf(UserException.class)
+                    .hasMessage(LoginErrorCode.NOT_AUTHORIZED_USER.getErrMsg());
+            assertThat(user.getEmailAuthKey()).isEqualTo("123456");
+        }
+
+        @Test
+        @DisplayName("로그인 실패 - 이메일 존재 x")
+        void loginFailTest_notExistEmail() {
+            //given
+            dto = LoginDto.builder()
+                    .email(email)
+                    .password(password)
+                    .build();
+            given(userRepository.findByEmail(email))
+                    .willReturn(Optional.empty());
+
+            //when then
+            assertThatThrownBy(() -> authService.login(dto))
+                    .isInstanceOf(UserException.class)
+                    .hasMessage(LoginErrorCode.NOT_EXIST_EMAIL.getErrMsg());
+        }
+    }
 
     @Nested
     @DisplayName("이메일 인증 테스트")
