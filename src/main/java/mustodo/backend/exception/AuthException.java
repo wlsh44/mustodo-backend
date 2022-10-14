@@ -5,12 +5,12 @@ import mustodo.backend.enums.error.ErrorCode;
 import mustodo.backend.enums.response.AuthResponseMsg;
 
 @Getter
-public class UserException extends RuntimeException {
+public class AuthException extends RuntimeException {
 
     private AuthResponseMsg msg;
     private ErrorCode errorCode;
 
-    public UserException(AuthResponseMsg responseMsg, ErrorCode errorCode) {
+    public AuthException(AuthResponseMsg responseMsg, ErrorCode errorCode) {
         super(errorCode.getErrMsg());
         this.msg = responseMsg;
         this.errorCode = errorCode;

@@ -5,7 +5,7 @@ import mustodo.backend.controller.AuthController;
 import mustodo.backend.dto.ErrorDto;
 import mustodo.backend.enums.error.ErrorCode;
 import mustodo.backend.enums.response.AuthResponseMsg;
-import mustodo.backend.exception.UserException;
+import mustodo.backend.exception.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -36,8 +36,8 @@ public class UserControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<ErrorDto> userException(UserException e) {
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorDto> userException(AuthException e) {
         ErrorCode errorCode = e.getErrorCode();
         AuthResponseMsg msg = e.getMsg();
 

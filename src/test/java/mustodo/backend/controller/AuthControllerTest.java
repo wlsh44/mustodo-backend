@@ -10,7 +10,7 @@ import mustodo.backend.dto.auth.LoginDto;
 import mustodo.backend.dto.auth.SignUpRequestDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.enums.error.LoginErrorCode;
-import mustodo.backend.exception.UserException;
+import mustodo.backend.exception.AuthException;
 import mustodo.backend.service.user.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -152,7 +152,7 @@ class AuthControllerTest {
         void failTest_alreadyExistsEmail() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new UserException(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL));
+                    .willThrow(new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post("/user")
@@ -175,7 +175,7 @@ class AuthControllerTest {
         void failTest_alreadyExistsName() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new UserException(SIGN_UP_FAILED, ALREADY_EXISTS_NAME));
+                    .willThrow(new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_NAME));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post("/user")
@@ -198,7 +198,7 @@ class AuthControllerTest {
         void failTest_uncheckedTermsAndCondition() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new UserException(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION));
+                    .willThrow(new AuthException(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post("/user")
@@ -221,7 +221,7 @@ class AuthControllerTest {
         void failTest_passwordNotCorrect() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new UserException(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED));
+                    .willThrow(new AuthException(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post("/user")
@@ -305,7 +305,7 @@ class AuthControllerTest {
         void failTest_sendMailFailed() throws Exception {
             //given
             given(authService.authorizeUser(dto))
-                    .willThrow(new UserException(EMAIL_AUTH_FAILED, EMAIL_SEND_FAILED));
+                    .willThrow(new AuthException(EMAIL_AUTH_FAILED, EMAIL_SEND_FAILED));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(put("/user/auth")
@@ -328,7 +328,7 @@ class AuthControllerTest {
         void failTest_createMessageFailed() throws Exception {
             //given
             given(authService.authorizeUser(dto))
-                    .willThrow(new UserException(EMAIL_AUTH_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
+                    .willThrow(new AuthException(EMAIL_AUTH_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(put("/user/auth")
@@ -406,7 +406,7 @@ class AuthControllerTest {
                     .errorCode(LOGIN_FAILED_ERROR)
                     .build();
             given(authService.login(dto))
-                    .willThrow(new UserException(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
+                    .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
 
             //when then
             mockMvc.perform(post("/user/login")
@@ -432,7 +432,7 @@ class AuthControllerTest {
                     .errorCode(LOGIN_FAILED_ERROR)
                     .build();
             given(authService.login(dto))
-                    .willThrow(new UserException(LOGIN_FAILED, LoginErrorCode.PASSWORD_NOT_CORRECT));
+                    .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.PASSWORD_NOT_CORRECT));
 
             //when then
             mockMvc.perform(post("/user/login")
@@ -458,7 +458,7 @@ class AuthControllerTest {
                     .errorCode(NOT_AUTHORIZED_USER)
                     .build();
             given(authService.login(dto))
-                    .willThrow(new UserException(LOGIN_FAILED, LoginErrorCode.NOT_AUTHORIZED_USER));
+                    .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.NOT_AUTHORIZED_USER));
 
             //when then
             mockMvc.perform(post("/user/login")
