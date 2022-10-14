@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.controller.AuthController;
 import mustodo.backend.dto.ErrorDto;
 import mustodo.backend.enums.error.ErrorCode;
-import mustodo.backend.enums.response.UserResponseMsg;
+import mustodo.backend.enums.response.AuthResponseMsg;
 import mustodo.backend.exception.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class UserControllerAdvice {
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ErrorDto> userException(UserException e) {
         ErrorCode errorCode = e.getErrorCode();
-        UserResponseMsg msg = e.getMsg();
+        AuthResponseMsg msg = e.getMsg();
 
         log.error(errorCode.getErrMsg());
 

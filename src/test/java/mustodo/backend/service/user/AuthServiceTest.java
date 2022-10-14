@@ -29,9 +29,9 @@ import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY
 import static mustodo.backend.enums.error.SignUpErrorCode.NOT_EXIST_EMAIL;
 import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SEND_FAILED;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
-import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
+import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SEND_FAILED;
+import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
+import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

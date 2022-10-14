@@ -15,7 +15,7 @@ import javax.mail.internet.MimeMessage;
 
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_SEND_FAILED;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SEND_FAILED;
+import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SEND_FAILED;
 
 @Slf4j
 @Component

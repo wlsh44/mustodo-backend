@@ -2,15 +2,15 @@ package mustodo.backend.exception;
 
 import lombok.Getter;
 import mustodo.backend.enums.error.ErrorCode;
-import mustodo.backend.enums.response.UserResponseMsg;
+import mustodo.backend.enums.response.AuthResponseMsg;
 
 @Getter
 public class UserException extends RuntimeException {
 
-    private UserResponseMsg msg;
+    private AuthResponseMsg msg;
     private ErrorCode errorCode;
 
-    public UserException(UserResponseMsg responseMsg, ErrorCode errorCode) {
+    public UserException(AuthResponseMsg responseMsg, ErrorCode errorCode) {
         super(errorCode.getErrMsg());
         this.msg = responseMsg;
         this.errorCode = errorCode;

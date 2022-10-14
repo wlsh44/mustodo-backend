@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_SUCCESS;
-import static mustodo.backend.enums.response.UserResponseMsg.LOGOUT_SUCCESS;
+import static mustodo.backend.enums.response.AuthResponseMsg.LOGIN_SUCCESS;
+import static mustodo.backend.enums.response.AuthResponseMsg.LOGOUT_SUCCESS;
 
 @Slf4j
 @RestController

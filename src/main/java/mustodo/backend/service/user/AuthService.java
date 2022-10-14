@@ -25,11 +25,11 @@ import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_NAME;
 import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
 import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
 import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_FAILED;
-import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
-import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_FAILED;
-import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_FAILED;
-import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
+import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_FAILED;
+import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
+import static mustodo.backend.enums.response.AuthResponseMsg.LOGIN_FAILED;
+import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_FAILED;
+import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_SUCCESS;
 
 @Slf4j
 @Service
