@@ -44,9 +44,12 @@ import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_SUCCESS;
+import static mustodo.backend.enums.response.UserResponseMsg.LOGOUT_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -414,7 +417,7 @@ class UserControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().json(objectMapper.writeValueAsString(message)))
-                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, Matchers.is(Matchers.nullValue())));
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())));
         }
 
         @Test
@@ -440,7 +443,7 @@ class UserControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().json(objectMapper.writeValueAsString(message)))
-                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, Matchers.is(Matchers.nullValue())));
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())));
         }
 
         @Test
@@ -466,10 +469,54 @@ class UserControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().json(objectMapper.writeValueAsString(message)))
-                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, Matchers.is(Matchers.nullValue())));
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())));
         }
     }
 
+
+    @Nested
+    @DisplayName("로그아웃 테스트")
+    class LogoutTest {
+
+        MockHttpSession session;
+
+        @BeforeEach
+        void init() {
+            session = new MockHttpSession();
+        }
+
+        @Test
+        @DisplayName("로그아웃 성공 - 로그인 유저 있는 경우")
+        void logoutSuccess_loginUserExists() throws Exception {
+            //given
+            MessageDto message = MessageDto.builder()
+                    .message(LOGOUT_SUCCESS)
+                    .build();
+            User user = User.builder().id(1L).build();
+            session.setAttribute(LOGIN_SESSION_ID, user);
+
+            mockMvc.perform(post("/user/logout")
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())))
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)));
+        }
+
+        @Test
+        @DisplayName("로그아웃 성공 - 로그인 유저 없는 경우")
+        void logoutSuccess_loginUserNotExist() throws Exception {
+            //given
+            MessageDto message = MessageDto.builder()
+                    .message(LOGOUT_SUCCESS)
+                    .build();
+
+            mockMvc.perform(post("/user/logout")
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())))
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)));
+        }
+    }
     private DocumentContext getParsedContent(MvcResult mvcResult) throws UnsupportedEncodingException {
         String contentAsString = mvcResult.getResponse().getContentAsString();
         return JsonPath.parse(contentAsString);
