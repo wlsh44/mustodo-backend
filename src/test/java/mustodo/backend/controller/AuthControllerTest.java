@@ -50,6 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -69,6 +70,7 @@ class AuthControllerTest {
 
     @MockBean
     AuthService authService;
+    String uri;
 
     @BeforeEach
     void init() {
@@ -87,6 +89,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
+            uri = "/auth/sign-up";
             dto = SignUpRequestDto.builder()
                     .email("test@test.test")
                     .name("test")
@@ -107,7 +110,7 @@ class AuthControllerTest {
                     .willReturn(expect);
 
             //when
-            MvcResult mvcResult = mockMvc.perform(post("/user")
+            MvcResult mvcResult = mockMvc.perform(post(uri)
                                             .contentType(MediaType.APPLICATION_JSON)
                                             .content(objectMapper.writeValueAsBytes(dto)))
                                         .andDo(print())
@@ -135,7 +138,7 @@ class AuthControllerTest {
                     .build();
 
             //when
-            MvcResult mvcResult = mockMvc.perform(post("/user")
+            MvcResult mvcResult = mockMvc.perform(post(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -155,7 +158,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL));
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(post("/user")
+            MvcResult mvcResult = mockMvc.perform(post(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -178,7 +181,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_NAME));
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(post("/user")
+            MvcResult mvcResult = mockMvc.perform(post(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -201,7 +204,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION));
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(post("/user")
+            MvcResult mvcResult = mockMvc.perform(post(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -224,7 +227,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED));
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(post("/user")
+            MvcResult mvcResult = mockMvc.perform(post(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -248,6 +251,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
+            uri = "/auth/authorization";
             dto = EmailAuthDto.builder()
                     .email("test@test.test")
                     .authKey("123456")
@@ -265,7 +269,7 @@ class AuthControllerTest {
                     .willReturn(expect);
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(put("/user/auth")
+            MvcResult mvcResult = mockMvc.perform(patch(uri)
                                             .contentType(MediaType.APPLICATION_JSON)
                                             .content(objectMapper.writeValueAsBytes(dto)))
                                         .andDo(print())
@@ -289,7 +293,7 @@ class AuthControllerTest {
                     .build();
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(put("/user/auth")
+            MvcResult mvcResult = mockMvc.perform(patch(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -308,7 +312,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(EMAIL_AUTH_FAILED, EMAIL_SEND_FAILED));
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(put("/user/auth")
+            MvcResult mvcResult = mockMvc.perform(patch(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -331,7 +335,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(EMAIL_AUTH_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
 
             //when then
-            MvcResult mvcResult = mockMvc.perform(put("/user/auth")
+            MvcResult mvcResult = mockMvc.perform(patch(uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(dto)))
                     .andDo(print())
@@ -359,6 +363,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
+            uri = "/auth/login";
             user = User.builder()
                     .id(1L)
                     .email("test@test.test")
@@ -383,7 +388,7 @@ class AuthControllerTest {
                     .willReturn(user);
 
             //when then
-            mockMvc.perform(post("/user/login")
+            mockMvc.perform(post(uri)
                             .content(objectMapper.writeValueAsString(dto))
                             .contentType(MediaType.APPLICATION_JSON)
                             .session(session))
@@ -409,7 +414,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
 
             //when then
-            mockMvc.perform(post("/user/login")
+            mockMvc.perform(post(uri)
                             .content(objectMapper.writeValueAsString(dto))
                             .contentType(MediaType.APPLICATION_JSON)
                             .session(session))
@@ -435,7 +440,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.PASSWORD_NOT_CORRECT));
 
             //when then
-            mockMvc.perform(post("/user/login")
+            mockMvc.perform(post(uri)
                             .content(objectMapper.writeValueAsString(dto))
                             .contentType(MediaType.APPLICATION_JSON)
                             .session(session))
@@ -461,7 +466,7 @@ class AuthControllerTest {
                     .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.NOT_AUTHORIZED_USER));
 
             //when then
-            mockMvc.perform(post("/user/login")
+            mockMvc.perform(post(uri)
                             .content(objectMapper.writeValueAsString(dto))
                             .contentType(MediaType.APPLICATION_JSON)
                             .session(session))
@@ -481,6 +486,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
+            uri = "/auth/logout";
             session = new MockHttpSession();
         }
 
@@ -494,7 +500,7 @@ class AuthControllerTest {
             User user = User.builder().id(1L).build();
             session.setAttribute(LOGIN_SESSION_ID, user);
 
-            mockMvc.perform(post("/user/logout")
+            mockMvc.perform(post(uri)
                             .session(session))
                     .andDo(print())
                     .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())))
@@ -509,7 +515,7 @@ class AuthControllerTest {
                     .message(LOGOUT_SUCCESS)
                     .build();
 
-            mockMvc.perform(post("/user/logout")
+            mockMvc.perform(post(uri)
                             .session(session))
                     .andDo(print())
                     .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())))
