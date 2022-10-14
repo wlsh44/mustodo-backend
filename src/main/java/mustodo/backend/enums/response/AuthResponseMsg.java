@@ -1,6 +1,6 @@
 package mustodo.backend.enums.response;
 
-public enum UserResponseMsg implements ResponseMsg {
+public enum AuthResponseMsg implements ResponseMsg {
     SIGN_UP_FAILED("회원가입에 실패했습니다."),
     SIGN_UP_SUCCESS("회원가입에 성공했습니다."),
     EMAIL_AUTH_SEND_FAILED("이메일 인증 전송에 실패했습니다"),
@@ -12,7 +12,7 @@ public enum UserResponseMsg implements ResponseMsg {
 
     private String resMsg;
 
-    UserResponseMsg(String resMsg) {
+    AuthResponseMsg(String resMsg) {
         this.resMsg = resMsg;
     }
 
