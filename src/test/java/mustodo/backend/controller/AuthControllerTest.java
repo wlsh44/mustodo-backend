@@ -29,7 +29,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.io.UnsupportedEncodingException;
 
-import static mustodo.backend.controller.UserController.LOGIN_SESSION_ID;
+import static mustodo.backend.controller.AuthController.LOGIN_SESSION_ID;
 import static mustodo.backend.enums.error.LoginErrorCode.LOGIN_FAILED_ERROR;
 import static mustodo.backend.enums.error.LoginErrorCode.NOT_AUTHORIZED_USER;
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
@@ -57,8 +57,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
-class UserControllerTest {
+@WebMvcTest(AuthController.class)
+class AuthControllerTest {
 
     MockMvc mockMvc;
 

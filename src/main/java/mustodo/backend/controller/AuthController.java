@@ -26,7 +26,7 @@ import static mustodo.backend.enums.response.UserResponseMsg.LOGOUT_SUCCESS;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class UserController {
+public class AuthController {
 
     public static final String LOGIN_SESSION_ID = "LOGIN_USER";
     private final AuthService authService;
