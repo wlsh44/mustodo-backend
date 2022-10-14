@@ -1,4 +1,4 @@
-package mustodo.backend.service.user.mail;
+package mustodo.backend.service.auth.mail;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

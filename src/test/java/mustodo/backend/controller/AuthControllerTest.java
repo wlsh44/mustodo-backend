@@ -11,7 +11,7 @@ import mustodo.backend.dto.auth.SignUpRequestDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.enums.error.LoginErrorCode;
 import mustodo.backend.exception.AuthException;
-import mustodo.backend.service.user.AuthService;
+import mustodo.backend.service.auth.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

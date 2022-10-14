@@ -1,4 +1,4 @@
-package mustodo.backend.service.user.mail;
+package mustodo.backend.service.auth.mail;
 
 import mustodo.backend.config.EmailConfig;
 import mustodo.backend.dto.auth.EmailAuthDto;

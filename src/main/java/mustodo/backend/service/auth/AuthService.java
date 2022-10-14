@@ -1,4 +1,4 @@
-package mustodo.backend.service.user;
+package mustodo.backend.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import mustodo.backend.enums.error.LoginErrorCode;
 import mustodo.backend.enums.error.SignUpErrorCode;
 import mustodo.backend.exception.AuthException;
 import mustodo.backend.repository.UserRepository;
-import mustodo.backend.service.user.mail.EmailAuthSender;
+import mustodo.backend.service.auth.mail.EmailAuthSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

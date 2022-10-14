@@ -1,4 +1,4 @@
-package mustodo.backend.service.user;
+package mustodo.backend.service.auth;
 
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.auth.EmailAuthDto;
@@ -9,7 +9,7 @@ import mustodo.backend.entity.embedded.EmailAuth;
 import mustodo.backend.enums.error.LoginErrorCode;
 import mustodo.backend.exception.AuthException;
 import mustodo.backend.repository.UserRepository;
-import mustodo.backend.service.user.mail.EmailAuthSender;
+import mustodo.backend.service.auth.mail.EmailAuthSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
