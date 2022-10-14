@@ -21,7 +21,7 @@ import static mustodo.backend.enums.response.BasicResponseMsg.INVALID_ARGUMENT_E
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = {AuthController.class})
-public class UserControllerAdvice {
+public class AuthControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
