@@ -6,9 +6,13 @@ import com.jayway.jsonpath.JsonPath;
 import mustodo.backend.dto.ErrorDto;
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.dto.user.EmailAuthDto;
+import mustodo.backend.dto.user.LoginDto;
 import mustodo.backend.dto.user.SignUpRequestDto;
+import mustodo.backend.entity.User;
+import mustodo.backend.enums.error.LoginErrorCode;
 import mustodo.backend.exception.UserException;
 import mustodo.backend.service.user.AuthService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,6 +30,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.io.UnsupportedEncodingException;
 
+import static mustodo.backend.controller.UserController.LOGIN_SESSION_ID;
+import static mustodo.backend.enums.error.LoginErrorCode.LOGIN_FAILED_ERROR;
+import static mustodo.backend.enums.error.LoginErrorCode.NOT_AUTHORIZED_USER;
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
 import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_NAME;
 import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
@@ -34,13 +42,20 @@ import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_COND
 import static mustodo.backend.enums.response.BasicResponseMsg.INVALID_ARGUMENT_ERROR;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
+import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_FAILED;
+import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_SUCCESS;
+import static mustodo.backend.enums.response.UserResponseMsg.LOGOUT_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
@@ -333,7 +348,175 @@ class UserControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("로그인 테스트")
+    class LoginTest {
 
+        LoginDto dto;
+
+        MockHttpSession session;
+
+        User user;
+
+        @BeforeEach
+        void init() {
+            user = User.builder()
+                    .id(1L)
+                    .email("test@test.test")
+                    .password("test")
+                    .name("name")
+                    .build();
+            session = new MockHttpSession();
+        }
+
+        @Test
+        @DisplayName("로그인 성공")
+        void loginSuccessTest() throws Exception {
+            //given
+            dto = LoginDto.builder()
+                    .email("test@test.test")
+                    .password("test")
+                    .build();
+            MessageDto message = MessageDto.builder()
+                    .message(LOGIN_SUCCESS)
+                    .build();
+            given(authService.login(dto))
+                    .willReturn(user);
+
+            //when then
+            mockMvc.perform(post("/user/login")
+                            .content(objectMapper.writeValueAsString(dto))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)))
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, user));
+        }
+
+        @Test
+        @DisplayName("로그인 실패 - 이메일 존재 x")
+        void loginFailTest_notExistEmail() throws Exception {
+            //given
+            dto = LoginDto.builder()
+                    .email("test@test.test")
+                    .password("test")
+                    .build();
+            ErrorDto message = ErrorDto.builder()
+                    .message(LOGIN_FAILED)
+                    .errorCode(LOGIN_FAILED_ERROR)
+                    .build();
+            given(authService.login(dto))
+                    .willThrow(new UserException(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
+
+            //when then
+            mockMvc.perform(post("/user/login")
+                            .content(objectMapper.writeValueAsString(dto))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)))
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())));
+        }
+
+        @Test
+        @DisplayName("로그인 실패 - 비밀번호 틀림")
+        void loginFailTest_passwordNotCorrect() throws Exception {
+            //given
+            dto = LoginDto.builder()
+                    .email("test@test.test")
+                    .password("test")
+                    .build();
+            ErrorDto message = ErrorDto.builder()
+                    .message(LOGIN_FAILED)
+                    .errorCode(LOGIN_FAILED_ERROR)
+                    .build();
+            given(authService.login(dto))
+                    .willThrow(new UserException(LOGIN_FAILED, LoginErrorCode.PASSWORD_NOT_CORRECT));
+
+            //when then
+            mockMvc.perform(post("/user/login")
+                            .content(objectMapper.writeValueAsString(dto))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)))
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())));
+        }
+
+        @Test
+        @DisplayName("로그인 실패 - 인증 안 된 유저")
+        void loginFailTest_notAuthorizedUser() throws Exception {
+            //given
+            dto = LoginDto.builder()
+                    .email("test@test.test")
+                    .password("test")
+                    .build();
+            ErrorDto message = ErrorDto.builder()
+                    .message(LOGIN_FAILED)
+                    .errorCode(NOT_AUTHORIZED_USER)
+                    .build();
+            given(authService.login(dto))
+                    .willThrow(new UserException(LOGIN_FAILED, LoginErrorCode.NOT_AUTHORIZED_USER));
+
+            //when then
+            mockMvc.perform(post("/user/login")
+                            .content(objectMapper.writeValueAsString(dto))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)))
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())));
+        }
+    }
+
+
+    @Nested
+    @DisplayName("로그아웃 테스트")
+    class LogoutTest {
+
+        MockHttpSession session;
+
+        @BeforeEach
+        void init() {
+            session = new MockHttpSession();
+        }
+
+        @Test
+        @DisplayName("로그아웃 성공 - 로그인 유저 있는 경우")
+        void logoutSuccess_loginUserExists() throws Exception {
+            //given
+            MessageDto message = MessageDto.builder()
+                    .message(LOGOUT_SUCCESS)
+                    .build();
+            User user = User.builder().id(1L).build();
+            session.setAttribute(LOGIN_SESSION_ID, user);
+
+            mockMvc.perform(post("/user/logout")
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())))
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)));
+        }
+
+        @Test
+        @DisplayName("로그아웃 성공 - 로그인 유저 없는 경우")
+        void logoutSuccess_loginUserNotExist() throws Exception {
+            //given
+            MessageDto message = MessageDto.builder()
+                    .message(LOGOUT_SUCCESS)
+                    .build();
+
+            mockMvc.perform(post("/user/logout")
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(request().sessionAttribute(LOGIN_SESSION_ID, is(nullValue())))
+                    .andExpect(content().json(objectMapper.writeValueAsString(message)));
+        }
+    }
     private DocumentContext getParsedContent(MvcResult mvcResult) throws UnsupportedEncodingException {
         String contentAsString = mvcResult.getResponse().getContentAsString();
         return JsonPath.parse(contentAsString);
