@@ -1,9 +1,9 @@
 package mustodo.backend.service.user;
 
 import mustodo.backend.dto.MessageDto;
-import mustodo.backend.dto.user.EmailAuthDto;
-import mustodo.backend.dto.user.LoginDto;
-import mustodo.backend.dto.user.SignUpRequestDto;
+import mustodo.backend.dto.auth.EmailAuthDto;
+import mustodo.backend.dto.auth.LoginDto;
+import mustodo.backend.dto.auth.SignUpRequestDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.entity.embedded.EmailAuth;
 import mustodo.backend.enums.error.LoginErrorCode;

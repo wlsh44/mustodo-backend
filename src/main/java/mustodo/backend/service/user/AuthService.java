@@ -3,9 +3,9 @@ package mustodo.backend.service.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.dto.MessageDto;
-import mustodo.backend.dto.user.EmailAuthDto;
-import mustodo.backend.dto.user.LoginDto;
-import mustodo.backend.dto.user.SignUpRequestDto;
+import mustodo.backend.dto.auth.EmailAuthDto;
+import mustodo.backend.dto.auth.LoginDto;
+import mustodo.backend.dto.auth.SignUpRequestDto;
 import mustodo.backend.entity.User;
 import mustodo.backend.entity.embedded.EmailAuth;
 import mustodo.backend.enums.Role;
@@ -28,7 +28,6 @@ import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_COND
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.EMAIL_AUTH_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_FAILED;
-import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_SUCCESS;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_FAILED;
 import static mustodo.backend.enums.response.UserResponseMsg.SIGN_UP_SUCCESS;
 
