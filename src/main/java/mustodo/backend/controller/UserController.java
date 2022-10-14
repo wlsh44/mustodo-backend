@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import static mustodo.backend.enums.response.UserResponseMsg.LOGIN_SUCCESS;
+import static mustodo.backend.enums.response.UserResponseMsg.LOGOUT_SUCCESS;
 
 @Slf4j
 @RestController
@@ -53,6 +54,19 @@ public class UserController {
     @PutMapping("/auth")
     public ResponseEntity<MessageDto> authorizeUser(@RequestBody @Valid EmailAuthDto dto) {
         MessageDto messageDto = authService.authorizeUser(dto);
+
+        return ResponseEntity.ok(messageDto);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<MessageDto> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session != null) {
+            session.invalidate();
+        }
+        MessageDto messageDto = MessageDto.builder()
+                .message(LOGOUT_SUCCESS)
+                .build();
 
         return ResponseEntity.ok(messageDto);
     }
