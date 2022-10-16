@@ -3,7 +3,7 @@ package mustodo.backend.exception.enums;
 public enum TodoErrorCode implements ErrorCode {
     ;
 
-    private String errMsg;
+    private final String errMsg;
 
     TodoErrorCode(String errMsg) {
         this.errMsg = errMsg;
