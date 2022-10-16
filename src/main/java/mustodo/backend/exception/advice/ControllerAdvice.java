@@ -3,7 +3,9 @@ package mustodo.backend.exception.advice;
 import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.auth.ui.AuthController;
 import mustodo.backend.dto.ErrorResponse;
+import mustodo.backend.exception.TodoException;
 import mustodo.backend.exception.auth.AuthException;
+import mustodo.backend.exception.user.UserException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +16,7 @@ import static mustodo.backend.enums.error.BasicErrorCode.INVALID_ARGUMENT_ERROR;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = {AuthController.class})
-public class AuthControllerAdvice {
+public class ControllerAdvice {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> bindingException(BindException e) {
@@ -25,7 +27,23 @@ public class AuthControllerAdvice {
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ErrorResponse> userException(AuthException e) {
+    public ResponseEntity<ErrorResponse> authException(AuthException e) {
+        String message = e.getMessage();
+        log.error(message);
+
+        return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorResponse> userException(UserException e) {
+        String message = e.getMessage();
+        log.error(message);
+
+        return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(TodoException.class)
+    public ResponseEntity<ErrorResponse> todoException(TodoException e) {
         String message = e.getMessage();
         log.error(message);
 

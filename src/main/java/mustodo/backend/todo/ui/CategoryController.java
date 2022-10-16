@@ -20,8 +20,8 @@ public class CategoryController {
 
     @PostMapping("")
     public ResponseEntity<MessageDto> save(@Login User user, NewCategoryDto dto) {
-        MessageDto messageDto = categoryService.save(user, dto);
+        categoryService.save(user, dto);
 
-        return ResponseEntity.ok(messageDto);
+        return ResponseEntity.ok().build();
     }
 }

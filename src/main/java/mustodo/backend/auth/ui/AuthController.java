@@ -8,6 +8,7 @@ import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.auth.application.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,24 +38,21 @@ public class AuthController {
 
         HttpSession session = request.getSession();
         session.setAttribute(LOGIN_SESSION_ID, user);
-        MessageDto message = MessageDto.builder()
-                .message(LOGIN_SUCCESS)
-                .build();
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/sign-up")
     public ResponseEntity<MessageDto> signUp(@RequestBody @Valid SignUpRequestDto dto) {
-        MessageDto messageDto = authService.signUp(dto);
+        authService.signUp(dto);
 
-        return ResponseEntity.ok(messageDto);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/authorization")
     public ResponseEntity<MessageDto> authorizeUser(@RequestBody @Valid EmailAuthDto dto) {
-        MessageDto messageDto = authService.authorizeUser(dto);
+        authService.authorizeUser(dto);
 
-        return ResponseEntity.ok(messageDto);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/logout")
@@ -63,10 +61,7 @@ public class AuthController {
         if (session != null) {
             session.invalidate();
         }
-        MessageDto messageDto = MessageDto.builder()
-                .message(LOGOUT_SUCCESS)
-                .build();
 
-        return ResponseEntity.ok(messageDto);
+        return ResponseEntity.ok().build();
     }
 }

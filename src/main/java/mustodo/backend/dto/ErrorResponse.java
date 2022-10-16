@@ -8,7 +8,6 @@ import mustodo.backend.enums.error.ErrorCode;
 import mustodo.backend.enums.response.ResponseMsg;
 
 @Getter
-@EqualsAndHashCode
 @AllArgsConstructor
 public class ErrorResponse {
 

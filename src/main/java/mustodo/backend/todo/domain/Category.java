@@ -2,6 +2,7 @@ package mustodo.backend.todo.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mustodo.backend.auth.domain.User;
 
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor

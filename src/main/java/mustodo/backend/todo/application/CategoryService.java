@@ -18,13 +18,11 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public MessageDto save(User user, NewCategoryDto dto) {
+    public Long save(User user, NewCategoryDto dto) {
         Category category = toCategoryEntity(user, dto);
-        categoryRepository.save(category);
+        Category saveCategory = categoryRepository.save(category);
 
-        return MessageDto.builder()
-                .message(CREATE_CATEGORY_SUCCESS)
-                .build();
+        return saveCategory.getId();
     }
 
     private Category toCategoryEntity(User user, NewCategoryDto dto) {

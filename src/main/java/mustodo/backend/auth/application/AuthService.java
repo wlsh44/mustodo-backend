@@ -59,12 +59,11 @@ public class AuthService {
     }
 
     @Transactional
-    public MessageDto authorizeUser(EmailAuthDto dto) {
+    public void authorizeUser(EmailAuthDto dto) {
         User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new UserNotFoundException(dto.getEmail()));
         validateEmailKey(dto, user.getEmailAuthKey());
 
         user.authorizeUser();
-        return MessageDto.builder().message(EMAIL_AUTH_SUCCESS).build();
     }
 
     private void validateEmailKey(EmailAuthDto dto, String emailAuthKey) {
@@ -74,7 +73,7 @@ public class AuthService {
     }
 
     @Transactional
-    public MessageDto signUp(SignUpRequestDto dto) {
+    public Long signUp(SignUpRequestDto dto) {
         validateSignUpDto(dto);
 
         String encodedPassword = encodePassword(dto.getPassword());
@@ -85,12 +84,18 @@ public class AuthService {
         User saveUser = userRepository.save(user);
         saveUser.setEmailAuthKey(emailAuthKey);
 
-        return MessageDto.builder().message(SIGN_UP_SUCCESS).build();
+        return saveUser.getId();
     }
 
     private User toUserEntity(SignUpRequestDto dto, String encodedPassword) {
         EmailAuth emailAuth = new EmailAuth(null, false);
-        return User.builder().email(dto.getEmail()).name(dto.getName()).password(encodedPassword).role(Role.USER).emailAuth(emailAuth).build();
+        return User.builder()
+                .email(dto.getEmail())
+                .name(dto.getName())
+                .password(encodedPassword)
+                .role(Role.USER)
+                .emailAuth(emailAuth)
+                .build();
     }
 
     private String encodePassword(String password) {
