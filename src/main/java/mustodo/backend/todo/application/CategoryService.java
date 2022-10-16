@@ -1,15 +1,12 @@
 package mustodo.backend.todo.application;
 
 import lombok.RequiredArgsConstructor;
-import mustodo.backend.dto.MessageDto;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
 import mustodo.backend.todo.domain.Category;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.todo.domain.CategoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static mustodo.backend.enums.response.CategoryResponseMsg.CREATE_CATEGORY_SUCCESS;
 
 @Service
 @RequiredArgsConstructor

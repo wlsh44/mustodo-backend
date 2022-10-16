@@ -3,7 +3,6 @@ package mustodo.backend.auth.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.auth.application.mail.EmailAuthSender;
-import mustodo.backend.dto.MessageDto;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
@@ -22,9 +21,6 @@ import mustodo.backend.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
-import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_SUCCESS;
 
 @Slf4j
 @Service
