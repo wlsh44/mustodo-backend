@@ -48,5 +48,4 @@ class CategoryControllerTest {
                     .andExpect(content().json(mapper.writeValueAsString(e.getErrorCode())));
         }
     }
-
 }

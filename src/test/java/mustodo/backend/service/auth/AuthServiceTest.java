@@ -265,7 +265,7 @@ class AuthServiceTest {
                     .build();
             given(userRepository.existsByEmail(dto.getEmail()))
                     .willReturn(false);
-            given(userRepository.save(user))
+            given(userRepository.save(any()))
                     .willReturn(user);
             given(passwordEncoder.encode(dto.getPassword()))
                     .willReturn("encodedPassword");
