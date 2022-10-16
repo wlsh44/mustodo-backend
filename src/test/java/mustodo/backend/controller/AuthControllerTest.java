@@ -10,8 +10,8 @@ import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.domain.User;
-import mustodo.backend.enums.error.LoginErrorCode;
-import mustodo.backend.exception.AuthException;
+import mustodo.backend.enums.auth.LoginErrorCode;
+import mustodo.backend.exception.AuthException2;
 import mustodo.backend.auth.application.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,14 +31,14 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.io.UnsupportedEncodingException;
 
 import static mustodo.backend.auth.ui.AuthController.LOGIN_SESSION_ID;
-import static mustodo.backend.enums.error.LoginErrorCode.LOGIN_FAILED_ERROR;
-import static mustodo.backend.enums.error.LoginErrorCode.NOT_AUTHORIZED_USER;
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_NAME;
-import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
-import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_SEND_FAILED;
-import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
-import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
+import static mustodo.backend.enums.auth.LoginErrorCode.LOGIN_FAILED_ERROR;
+import static mustodo.backend.enums.auth.LoginErrorCode.NOT_AUTHORIZED_USER;
+import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
+import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_NAME;
+import static mustodo.backend.enums.auth.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
+import static mustodo.backend.enums.auth.SignUpErrorCode.EMAIL_SEND_FAILED;
+import static mustodo.backend.enums.auth.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
+import static mustodo.backend.enums.auth.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
 import static mustodo.backend.enums.response.BasicResponseMsg.INVALID_ARGUMENT_ERROR;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
@@ -156,7 +156,7 @@ class AuthControllerTest {
         void failTest_alreadyExistsEmail() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL));
+                    .willThrow(new AuthException2(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post(uri)
@@ -179,7 +179,7 @@ class AuthControllerTest {
         void failTest_alreadyExistsName() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_NAME));
+                    .willThrow(new AuthException2(SIGN_UP_FAILED, ALREADY_EXISTS_NAME));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post(uri)
@@ -202,7 +202,7 @@ class AuthControllerTest {
         void failTest_uncheckedTermsAndCondition() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new AuthException(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION));
+                    .willThrow(new AuthException2(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post(uri)
@@ -225,7 +225,7 @@ class AuthControllerTest {
         void failTest_passwordNotCorrect() throws Exception {
             //given
             given(authService.signUp(dto))
-                    .willThrow(new AuthException(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED));
+                    .willThrow(new AuthException2(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(post(uri)
@@ -310,7 +310,7 @@ class AuthControllerTest {
         void failTest_sendMailFailed() throws Exception {
             //given
             given(authService.authorizeUser(dto))
-                    .willThrow(new AuthException(EMAIL_AUTH_FAILED, EMAIL_SEND_FAILED));
+                    .willThrow(new AuthException2(EMAIL_AUTH_FAILED, EMAIL_SEND_FAILED));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(patch(uri)
@@ -333,7 +333,7 @@ class AuthControllerTest {
         void failTest_createMessageFailed() throws Exception {
             //given
             given(authService.authorizeUser(dto))
-                    .willThrow(new AuthException(EMAIL_AUTH_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
+                    .willThrow(new AuthException2(EMAIL_AUTH_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
 
             //when then
             MvcResult mvcResult = mockMvc.perform(patch(uri)
@@ -412,7 +412,7 @@ class AuthControllerTest {
                     .errorCode(LOGIN_FAILED_ERROR)
                     .build();
             given(authService.login(dto))
-                    .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
+                    .willThrow(new AuthException2(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
 
             //when then
             mockMvc.perform(post(uri)
@@ -438,7 +438,7 @@ class AuthControllerTest {
                     .errorCode(LOGIN_FAILED_ERROR)
                     .build();
             given(authService.login(dto))
-                    .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.PASSWORD_NOT_CORRECT));
+                    .willThrow(new AuthException2(LOGIN_FAILED, LoginErrorCode.PASSWORD_NOT_CORRECT));
 
             //when then
             mockMvc.perform(post(uri)
@@ -464,7 +464,7 @@ class AuthControllerTest {
                     .errorCode(NOT_AUTHORIZED_USER)
                     .build();
             given(authService.login(dto))
-                    .willThrow(new AuthException(LOGIN_FAILED, LoginErrorCode.NOT_AUTHORIZED_USER));
+                    .willThrow(new AuthException2(LOGIN_FAILED, LoginErrorCode.NOT_AUTHORIZED_USER));
 
             //when then
             mockMvc.perform(post(uri)

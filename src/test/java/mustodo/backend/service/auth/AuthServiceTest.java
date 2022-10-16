@@ -7,8 +7,8 @@ import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.auth.domain.embedded.EmailAuth;
-import mustodo.backend.enums.error.LoginErrorCode;
-import mustodo.backend.exception.AuthException;
+import mustodo.backend.enums.auth.LoginErrorCode;
+import mustodo.backend.exception.AuthException2;
 import mustodo.backend.user.UserRepository;
 import mustodo.backend.auth.application.mail.EmailAuthSender;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,13 +23,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_NAME;
-import static mustodo.backend.enums.error.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
-import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
-import static mustodo.backend.enums.error.SignUpErrorCode.NOT_EXIST_EMAIL;
-import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
-import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
+import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
+import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_NAME;
+import static mustodo.backend.enums.auth.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
+import static mustodo.backend.enums.auth.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
+import static mustodo.backend.enums.auth.SignUpErrorCode.NOT_EXIST_EMAIL;
+import static mustodo.backend.enums.auth.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
+import static mustodo.backend.enums.auth.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SEND_FAILED;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
 import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_SUCCESS;
@@ -115,7 +115,7 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.login(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(LoginErrorCode.PASSWORD_NOT_CORRECT.getErrMsg());
         }
 
@@ -143,7 +143,7 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.login(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(LoginErrorCode.NOT_AUTHORIZED_USER.getErrMsg());
             assertThat(user.getEmailAuthKey()).isEqualTo("123456");
         }
@@ -161,7 +161,7 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.login(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(LoginErrorCode.NOT_EXIST_EMAIL.getErrMsg());
         }
     }
@@ -213,7 +213,7 @@ class AuthServiceTest {
 
             //when
             assertThatThrownBy(() -> authService.authorizeUser(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(INVALID_EMAIL_AUTH_KEY.getErrMsg());
         }
 
@@ -230,7 +230,7 @@ class AuthServiceTest {
 
             //when
             assertThatThrownBy(() -> authService.authorizeUser(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(NOT_EXIST_EMAIL.getErrMsg());
         }
     }
@@ -289,7 +289,7 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(UNCHECK_TERMS_AND_CONDITION.getErrMsg());
         }
 
@@ -302,7 +302,7 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(ALREADY_EXISTS_EMAIL.getErrMsg());
         }
 
@@ -317,7 +317,7 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(ALREADY_EXISTS_NAME.getErrMsg());
         }
 
@@ -337,7 +337,7 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(PASSWORD_CONFIRM_FAILED.getErrMsg());
         }
 
@@ -348,11 +348,11 @@ class AuthServiceTest {
             given(userRepository.existsByEmail(dto.getEmail()))
                     .willReturn(false);
             given(emailAuthSender.sendAuthMail(any()))
-                    .willThrow(new AuthException(EMAIL_AUTH_SEND_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
+                    .willThrow(new AuthException2(EMAIL_AUTH_SEND_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException.class)
+                    .isInstanceOf(AuthException2.class)
                     .hasMessage(EMAIL_MESSAGE_CREATE_FAILED.getErrMsg());
         }
     }

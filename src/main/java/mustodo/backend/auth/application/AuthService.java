@@ -10,21 +10,21 @@ import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.auth.domain.embedded.EmailAuth;
 import mustodo.backend.enums.Role;
-import mustodo.backend.enums.error.LoginErrorCode;
-import mustodo.backend.enums.error.SignUpErrorCode;
-import mustodo.backend.exception.AuthException;
+import mustodo.backend.enums.auth.LoginErrorCode;
+import mustodo.backend.enums.auth.SignUpErrorCode;
+import mustodo.backend.exception.AuthException2;
 import mustodo.backend.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static mustodo.backend.enums.error.LoginErrorCode.NOT_AUTHORIZED_USER;
-import static mustodo.backend.enums.error.LoginErrorCode.PASSWORD_NOT_CORRECT;
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
-import static mustodo.backend.enums.error.SignUpErrorCode.ALREADY_EXISTS_NAME;
-import static mustodo.backend.enums.error.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
-import static mustodo.backend.enums.error.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
-import static mustodo.backend.enums.error.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
+import static mustodo.backend.enums.auth.LoginErrorCode.NOT_AUTHORIZED_USER;
+import static mustodo.backend.enums.auth.LoginErrorCode.PASSWORD_NOT_CORRECT;
+import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
+import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_NAME;
+import static mustodo.backend.enums.auth.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
+import static mustodo.backend.enums.auth.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
+import static mustodo.backend.enums.auth.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
 import static mustodo.backend.enums.response.AuthResponseMsg.LOGIN_FAILED;
@@ -43,7 +43,7 @@ public class AuthService {
     @Transactional
     public User login(LoginDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new AuthException(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
+                .orElseThrow(() -> new AuthException2(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
         validatePassword(dto, user.getPassword());
         validateAuthorizedUser(user);
 
@@ -54,20 +54,20 @@ public class AuthService {
         if (!user.isAuthorizedUser()) {
             String emailAuthKey = emailAuthSender.sendAuthMail(user);
             user.setEmailAuthKey(emailAuthKey);
-            throw new AuthException(LOGIN_FAILED, NOT_AUTHORIZED_USER);
+            throw new AuthException2(LOGIN_FAILED, NOT_AUTHORIZED_USER);
         }
     }
 
     private void validatePassword(LoginDto dto, String password) {
         if (!passwordEncoder.matches(dto.getPassword(), password)) {
-            throw new AuthException(LOGIN_FAILED, PASSWORD_NOT_CORRECT);
+            throw new AuthException2(LOGIN_FAILED, PASSWORD_NOT_CORRECT);
         }
     }
 
     @Transactional
     public MessageDto authorizeUser(EmailAuthDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new AuthException(EMAIL_AUTH_FAILED, SignUpErrorCode.NOT_EXIST_EMAIL));
+                .orElseThrow(() -> new AuthException2(EMAIL_AUTH_FAILED, SignUpErrorCode.NOT_EXIST_EMAIL));
         validateEmailKey(dto, user.getEmailAuthKey());
 
         user.authorizeUser();
@@ -78,7 +78,7 @@ public class AuthService {
 
     private void validateEmailKey(EmailAuthDto dto, String emailAuthKey) {
         if (!dto.getAuthKey().equals(emailAuthKey)) {
-            throw new AuthException(EMAIL_AUTH_FAILED, INVALID_EMAIL_AUTH_KEY);
+            throw new AuthException2(EMAIL_AUTH_FAILED, INVALID_EMAIL_AUTH_KEY);
         }
     }
 
@@ -123,7 +123,7 @@ public class AuthService {
 
     private void validateName(SignUpRequestDto dto) {
         if (userRepository.existsByName(dto.getName())) {
-            throw new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_NAME);
+            throw new AuthException2(SIGN_UP_FAILED, ALREADY_EXISTS_NAME);
         }
     }
 
@@ -131,19 +131,19 @@ public class AuthService {
         String password = dto.getPassword();
 
         if (!password.equals(dto.getPasswordConfirm())) {
-            throw new AuthException(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED);
+            throw new AuthException2(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED);
         }
     }
 
     private void validateEmail(SignUpRequestDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new AuthException(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL);
+            throw new AuthException2(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL);
         }
     }
 
     private void validateTermsAndCondition(boolean termsAndConditions) {
         if (!termsAndConditions) {
-            throw new AuthException(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION);
+            throw new AuthException2(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION);
         }
     }
 }

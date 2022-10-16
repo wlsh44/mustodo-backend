@@ -5,7 +5,7 @@ import mustodo.backend.auth.ui.AuthController;
 import mustodo.backend.dto.ErrorDto;
 import mustodo.backend.enums.error.ErrorCode;
 import mustodo.backend.enums.response.AuthResponseMsg;
-import mustodo.backend.exception.AuthException;
+import mustodo.backend.exception.AuthException2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
-import static mustodo.backend.enums.error.LoginErrorCode.LOGIN_FAILED_ERROR;
-import static mustodo.backend.enums.error.LoginErrorCode.NOT_EXIST_EMAIL;
-import static mustodo.backend.enums.error.LoginErrorCode.PASSWORD_NOT_CORRECT;
+import static mustodo.backend.enums.auth.LoginErrorCode.LOGIN_FAILED_ERROR;
+import static mustodo.backend.enums.auth.LoginErrorCode.NOT_EXIST_EMAIL;
+import static mustodo.backend.enums.auth.LoginErrorCode.PASSWORD_NOT_CORRECT;
 import static mustodo.backend.enums.response.BasicResponseMsg.INVALID_ARGUMENT_ERROR;
 
 @Slf4j
@@ -36,8 +36,8 @@ public class AuthControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ErrorDto> userException(AuthException e) {
+    @ExceptionHandler(AuthException2.class)
+    public ResponseEntity<ErrorDto> userException(AuthException2 e) {
         ErrorCode errorCode = e.getErrorCode();
         AuthResponseMsg msg = e.getMsg();
 

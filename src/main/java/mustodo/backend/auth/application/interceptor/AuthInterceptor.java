@@ -3,7 +3,7 @@ package mustodo.backend.auth.application.interceptor;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.enums.error.BasicErrorCode;
 import mustodo.backend.enums.response.AuthResponseMsg;
-import mustodo.backend.exception.AuthException;
+import mustodo.backend.exception.AuthException2;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +24,6 @@ public class AuthInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        throw new AuthException(AuthResponseMsg.NOT_AUTHORIZED_USER_ACCESS, BasicErrorCode.NOT_AUTHORIZED_USER_ACCESS);
+        throw new AuthException2(AuthResponseMsg.NOT_AUTHORIZED_USER_ACCESS, BasicErrorCode.NOT_AUTHORIZED_USER_ACCESS);
     }
 }

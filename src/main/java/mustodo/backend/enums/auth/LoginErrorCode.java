@@ -1,4 +1,6 @@
-package mustodo.backend.enums.error;
+package mustodo.backend.enums.auth;
+
+import mustodo.backend.enums.error.ErrorCode;
 
 public enum LoginErrorCode implements ErrorCode {
     PASSWORD_NOT_CORRECT("비밀번호가 올바르지 않습니다."),
