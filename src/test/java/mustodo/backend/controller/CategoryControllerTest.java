@@ -1,9 +1,8 @@
 package mustodo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mustodo.backend.dto.ErrorResponse;
 import mustodo.backend.auth.domain.User;
-import mustodo.backend.enums.error.BasicErrorCode;
+import mustodo.backend.exception.auth.NotAuthorizedException;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.todo.ui.CategoryController;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static mustodo.backend.enums.response.AuthResponseMsg.NOT_AUTHORIZED_USER_ACCESS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -42,14 +40,12 @@ class CategoryControllerTest {
 
         @Test
         void saveTest() throws Exception {
-            ErrorResponse error = ErrorResponse.builder()
-                    .message(NOT_AUTHORIZED_USER_ACCESS)
-                    .errorCode(BasicErrorCode.NOT_AUTHORIZED_USER_ACCESS)
-                    .build();
+            NotAuthorizedException e = new NotAuthorizedException();
 
+            //when then
             mockMvc.perform(post("/api/category"))
                     .andDo(print())
-                    .andExpect(content().json(mapper.writeValueAsString(error)));
+                    .andExpect(content().json(mapper.writeValueAsString(e.getErrorCode())));
         }
     }
 

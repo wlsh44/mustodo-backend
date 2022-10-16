@@ -7,8 +7,16 @@ import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.auth.domain.embedded.EmailAuth;
-import mustodo.backend.enums.auth.LoginErrorCode;
-import mustodo.backend.exception.AuthException2;
+import mustodo.backend.exception.auth.EmailMessageCreateFailException;
+import mustodo.backend.exception.auth.EmailSendFailException;
+import mustodo.backend.exception.auth.IdPasswordNotCorrectException;
+import mustodo.backend.exception.auth.InvalidEmailAuthKeyException;
+import mustodo.backend.exception.auth.NotAuthorizedException;
+import mustodo.backend.exception.auth.PasswordConfirmException;
+import mustodo.backend.exception.auth.UncheckTermsAndConditionException;
+import mustodo.backend.exception.user.EmailDuplicateException;
+import mustodo.backend.exception.user.UserNameDuplicateException;
+import mustodo.backend.exception.user.UserNotFoundException;
 import mustodo.backend.user.UserRepository;
 import mustodo.backend.auth.application.mail.EmailAuthSender;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,14 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
-import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_NAME;
-import static mustodo.backend.enums.auth.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
-import static mustodo.backend.enums.auth.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
-import static mustodo.backend.enums.auth.SignUpErrorCode.NOT_EXIST_EMAIL;
-import static mustodo.backend.enums.auth.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
-import static mustodo.backend.enums.auth.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
-import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SEND_FAILED;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
 import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,6 +97,7 @@ class AuthServiceTest {
         @DisplayName("로그인 실패 - 비밀번호 틀림")
         void loginFailTest_passwordNotCorrect() {
             //given
+            IdPasswordNotCorrectException e = new IdPasswordNotCorrectException();
             dto = LoginDto.builder()
                     .email(email)
                     .password(password)
@@ -115,14 +116,15 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.login(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(LoginErrorCode.PASSWORD_NOT_CORRECT.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
 
         @Test
         @DisplayName("로그인 실패 - 인증 안 된 유저")
         void loginFailTest_unAuthorizedUser() {
             //given
+            NotAuthorizedException e = new NotAuthorizedException();
             dto = LoginDto.builder()
                     .email(email)
                     .password(password)
@@ -143,8 +145,8 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.login(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(LoginErrorCode.NOT_AUTHORIZED_USER.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
             assertThat(user.getEmailAuthKey()).isEqualTo("123456");
         }
 
@@ -152,6 +154,7 @@ class AuthServiceTest {
         @DisplayName("로그인 실패 - 이메일 존재 x")
         void loginFailTest_notExistEmail() {
             //given
+            IdPasswordNotCorrectException e = new IdPasswordNotCorrectException();
             dto = LoginDto.builder()
                     .email(email)
                     .password(password)
@@ -161,8 +164,8 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.login(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(LoginErrorCode.NOT_EXIST_EMAIL.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
     }
 
@@ -205,33 +208,37 @@ class AuthServiceTest {
         @DisplayName("유저 인증 실패: 잘못된 인증 번호")
         void authUserFailTest_wrongAuthKey() {
             //given
+            String authKey = "456789";
+            InvalidEmailAuthKeyException e = new InvalidEmailAuthKeyException(authKey);
             dto = EmailAuthDto.builder()
-                    .authKey("456789")
+                    .authKey(authKey)
                     .build();
             given(userRepository.findByEmail(email))
                     .willReturn(Optional.of(user));
 
             //when
             assertThatThrownBy(() -> authService.authorizeUser(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(INVALID_EMAIL_AUTH_KEY.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
 
         @Test
         @DisplayName("유저 인증 실패: 없는 이메일")
         void authUserFailTest() {
             //given
+            String email = "wrongEmail@email.com";
+            UserNotFoundException e = new UserNotFoundException(email);
             dto = EmailAuthDto.builder()
-                    .email("wrongEmail@email.com")
+                    .email(email)
                     .authKey("123456")
                     .build();
-            given(userRepository.findByEmail("wrongEmail@email.com"))
+            given(userRepository.findByEmail(email))
                     .willReturn(Optional.empty());
 
             //when
             assertThatThrownBy(() -> authService.authorizeUser(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(NOT_EXIST_EMAIL.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
     }
 
@@ -279,6 +286,7 @@ class AuthServiceTest {
         @DisplayName("회원가입 실패: 약관 동의 안함")
         void signUpFailedTest_uncheckTermsAndCondition() {
             //given
+            UncheckTermsAndConditionException e = new UncheckTermsAndConditionException();
             dto = SignUpRequestDto.builder()
                     .email("test")
                     .name("test")
@@ -289,27 +297,29 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(UNCHECK_TERMS_AND_CONDITION.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
 
         @Test
         @DisplayName("회원가입 실패: 이미 있는 이메일")
         void signUpFailedTest_alreadyExistEmail() {
+            EmailDuplicateException e = new EmailDuplicateException(dto.getEmail());
             //given
             given(userRepository.existsByEmail(dto.getEmail()))
                     .willReturn(true);
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(ALREADY_EXISTS_EMAIL.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
 
         @Test
         @DisplayName("회원가입 실패: 이미 있는 이름")
         void signUpFailedTest_alreadyExistName() {
             //given
+            UserNameDuplicateException e = new UserNameDuplicateException(dto.getName());
             given(userRepository.existsByEmail(dto.getEmail()))
                     .willReturn(false);
             given(userRepository.existsByName(dto.getName()))
@@ -317,14 +327,15 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(ALREADY_EXISTS_NAME.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
 
         @Test
         @DisplayName("회원가입 실패: 비밀번호 인증 실패")
         void signUpFailedTest_passwordConfirmFailed() {
             //given
+            PasswordConfirmException e = new PasswordConfirmException();
             dto = SignUpRequestDto.builder()
                     .email("test")
                     .name("test")
@@ -337,23 +348,40 @@ class AuthServiceTest {
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(PASSWORD_CONFIRM_FAILED.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+
+        @Test
+        @DisplayName("회원가입 실패: 인증 메일 생성 실패")
+        void signUpFailedTest_authMailCreateFailed() {
+            //given
+            EmailMessageCreateFailException e = new EmailMessageCreateFailException();
+            given(userRepository.existsByEmail(dto.getEmail()))
+                    .willReturn(false);
+            given(emailAuthSender.sendAuthMail(any()))
+                    .willThrow(e);
+
+            //when then
+            assertThatThrownBy(() -> authService.signUp(dto))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
 
         @Test
         @DisplayName("회원가입 실패: 인증 메일 전송 실패")
-        void signUpFailedTest_authMailCreateFailed() {
+        void signUpFailedTest_authMailSendFail() {
             //given
+            EmailSendFailException e = new EmailSendFailException();
             given(userRepository.existsByEmail(dto.getEmail()))
                     .willReturn(false);
             given(emailAuthSender.sendAuthMail(any()))
-                    .willThrow(new AuthException2(EMAIL_AUTH_SEND_FAILED, EMAIL_MESSAGE_CREATE_FAILED));
+                    .willThrow(e);
 
             //when then
             assertThatThrownBy(() -> authService.signUp(dto))
-                    .isInstanceOf(AuthException2.class)
-                    .hasMessage(EMAIL_MESSAGE_CREATE_FAILED.getErrMsg());
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
     }
 }
