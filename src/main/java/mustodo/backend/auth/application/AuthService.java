@@ -8,7 +8,7 @@ import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.auth.domain.embedded.EmailAuth;
-import mustodo.backend.enums.Role;
+import mustodo.backend.auth.domain.Role;
 import mustodo.backend.exception.auth.IdPasswordNotCorrectException;
 import mustodo.backend.exception.auth.InvalidEmailAuthKeyException;
 import mustodo.backend.exception.auth.NotAuthorizedException;

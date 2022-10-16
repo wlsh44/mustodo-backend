@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mustodo.backend.auth.domain.embedded.EmailAuth;
 import mustodo.backend.auth.domain.embedded.Image;
-import mustodo.backend.enums.Role;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

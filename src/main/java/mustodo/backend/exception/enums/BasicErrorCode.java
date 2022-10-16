@@ -1,4 +1,4 @@
-package mustodo.backend.enums.error;
+package mustodo.backend.exception.enums;
 
 public enum BasicErrorCode implements ErrorCode {
     NOT_AUTHORIZED_USER_ACCESS("권한이 없습니다."),

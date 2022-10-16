@@ -1,9 +1,9 @@
 package mustodo.backend.exception.user;
 
-import mustodo.backend.enums.error.ErrorCode;
+import mustodo.backend.exception.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_NAME;
+import static mustodo.backend.exception.enums.UserErrorCode.ALREADY_EXISTS_NAME;
 
 public class UserNameDuplicateException extends UserException {
 

@@ -1,7 +1,7 @@
 package mustodo.backend.exception.auth;
 
 import lombok.Getter;
-import mustodo.backend.enums.error.ErrorCode;
+import mustodo.backend.exception.enums.ErrorCode;
 import mustodo.backend.exception.MustodoException;
 import org.springframework.http.HttpStatus;
 

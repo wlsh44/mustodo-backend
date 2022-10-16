@@ -1,4 +1,4 @@
-package mustodo.backend.enums;
+package mustodo.backend.auth.domain;
 
 public enum Role {
     USER,

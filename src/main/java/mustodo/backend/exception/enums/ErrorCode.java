@@ -1,4 +1,4 @@
-package mustodo.backend.enums.error;
+package mustodo.backend.exception.enums;
 
 public interface ErrorCode {
     String getErrMsg();

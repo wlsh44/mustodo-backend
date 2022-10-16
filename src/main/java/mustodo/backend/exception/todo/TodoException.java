@@ -1,8 +1,8 @@
-package mustodo.backend.exception;
+package mustodo.backend.exception.todo;
 
 import lombok.Getter;
-import mustodo.backend.enums.error.ErrorCode;
-import mustodo.backend.enums.response.CategoryResponseMsg;
+import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.MustodoException;
 import org.springframework.http.HttpStatus;
 
 @Getter

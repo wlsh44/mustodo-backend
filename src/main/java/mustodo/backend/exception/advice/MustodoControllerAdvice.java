@@ -1,8 +1,8 @@
 package mustodo.backend.exception.advice;
 
 import lombok.extern.slf4j.Slf4j;
-import mustodo.backend.exception.dto.ErrorResponse;
-import mustodo.backend.exception.TodoException;
+import mustodo.backend.exception.advice.dto.ErrorResponse;
+import mustodo.backend.exception.todo.TodoException;
 import mustodo.backend.exception.auth.AuthException;
 import mustodo.backend.exception.user.UserException;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
-import static mustodo.backend.enums.error.BasicErrorCode.INVALID_ARGUMENT_ERROR;
+import static mustodo.backend.exception.enums.BasicErrorCode.INVALID_ARGUMENT_ERROR;
 
 @Slf4j
 @RestControllerAdvice
