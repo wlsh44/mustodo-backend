@@ -68,7 +68,7 @@ public class AuthService {
 
     private void validateEmailKey(EmailAuthDto dto, String emailAuthKey) {
         if (!dto.getAuthKey().equals(emailAuthKey)) {
-            throw new InvalidEmailAuthKeyException(emailAuthKey);
+            throw new InvalidEmailAuthKeyException(dto.getAuthKey());
         }
     }
 
