@@ -76,7 +76,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
-            uri = "/auth/sign-up";
+            uri = "/api/auth/sign-up";
             dto = SignUpRequestDto.builder()
                     .email("test@test.test")
                     .name("test")
@@ -203,7 +203,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
-            uri = "/auth/authorization";
+            uri = "/api/auth/authorization";
             dto = EmailAuthDto.builder()
                     .email("test@test.test")
                     .authKey("123456")
@@ -291,7 +291,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
-            uri = "/auth/login";
+            uri = "/api/auth/login";
             dto = LoginDto.builder()
                     .email("test@test.test")
                     .password("test")
@@ -393,7 +393,7 @@ class AuthControllerTest {
 
         @BeforeEach
         void init() {
-            uri = "/auth/logout";
+            uri = "/api/auth/logout";
             session = new MockHttpSession();
         }
 
