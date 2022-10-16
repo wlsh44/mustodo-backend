@@ -52,4 +52,11 @@ public class MustodoControllerAdvice {
 
         return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getErrorCode()));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> exception(Exception e) {
+        log.error(e.getMessage());
+
+        return ResponseEntity.internalServerError().build();
+    }
 }
