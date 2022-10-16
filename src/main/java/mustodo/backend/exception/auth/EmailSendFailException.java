@@ -10,6 +10,6 @@ public class EmailSendFailException extends AuthException {
     private static final ErrorCode errorCode = INVALID_EMAIL_AUTH_KEY;
 
     public EmailSendFailException() {
-        super(errorCode.getErrMsg(), HttpStatus.BAD_REQUEST, errorCode);
+        super(errorCode.getErrMsg(), HttpStatus.INTERNAL_SERVER_ERROR, errorCode);
     }
 }
