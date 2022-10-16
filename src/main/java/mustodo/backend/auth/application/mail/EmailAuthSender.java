@@ -4,18 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.config.EmailConfig;
 import mustodo.backend.auth.domain.User;
-import mustodo.backend.exception.AuthException2;
+import mustodo.backend.exception.auth.EmailMessageCreateFailException;
+import mustodo.backend.exception.auth.EmailSendFailException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import static mustodo.backend.enums.auth.SignUpErrorCode.EMAIL_MESSAGE_CREATE_FAILED;
-import static mustodo.backend.enums.auth.SignUpErrorCode.EMAIL_SEND_FAILED;
-import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SEND_FAILED;
+import java.io.UnsupportedEncodingException;
+
 
 @Slf4j
 @Component
@@ -37,14 +38,14 @@ public class EmailAuthSender {
         } catch (MailException e) {
             log.error(e.getMessage());
             log.error("이메일 전송 실패, email: {}", user.getEmail());
-            throw new AuthException2(EMAIL_AUTH_SEND_FAILED, EMAIL_SEND_FAILED);
+            throw new EmailSendFailException();
         } catch (Exception e) {
-            throw new AuthException2(EMAIL_AUTH_SEND_FAILED, EMAIL_MESSAGE_CREATE_FAILED);
+            throw new EmailMessageCreateFailException();
         }
         return emailKey;
     }
 
-    private MimeMessage createMessage(String to, String emailKey) throws Exception {
+    private MimeMessage createMessage(String to, String emailKey) throws UnsupportedEncodingException, MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, to);
         message.setSubject("Mustodo 이메일 인증");

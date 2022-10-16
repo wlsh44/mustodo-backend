@@ -1,7 +1,7 @@
 package mustodo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mustodo.backend.dto.ErrorDto;
+import mustodo.backend.dto.ErrorResponse;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.enums.error.BasicErrorCode;
 import mustodo.backend.todo.application.CategoryService;
@@ -42,7 +42,7 @@ class CategoryControllerTest {
 
         @Test
         void saveTest() throws Exception {
-            ErrorDto error = ErrorDto.builder()
+            ErrorResponse error = ErrorResponse.builder()
                     .message(NOT_AUTHORIZED_USER_ACCESS)
                     .errorCode(BasicErrorCode.NOT_AUTHORIZED_USER_ACCESS)
                     .build();

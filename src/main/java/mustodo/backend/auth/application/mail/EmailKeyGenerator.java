@@ -10,7 +10,7 @@ public class EmailKeyGenerator {
     private static final int AUTH_KEY_LENGTH = 6;
 
     public String createKey() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         Random random = new Random();
         for (int i = 0; i < AUTH_KEY_LENGTH; i++) {

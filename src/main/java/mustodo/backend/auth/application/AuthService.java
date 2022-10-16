@@ -10,25 +10,20 @@ import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.auth.domain.embedded.EmailAuth;
 import mustodo.backend.enums.Role;
-import mustodo.backend.enums.auth.LoginErrorCode;
-import mustodo.backend.enums.auth.SignUpErrorCode;
-import mustodo.backend.exception.AuthException2;
+import mustodo.backend.exception.auth.IdPasswordNotCorrectException;
+import mustodo.backend.exception.auth.InvalidEmailAuthKeyException;
+import mustodo.backend.exception.auth.NotAuthorizedException;
+import mustodo.backend.exception.auth.PasswordConfirmException;
+import mustodo.backend.exception.auth.UncheckTermsAndConditionException;
+import mustodo.backend.exception.user.EmailDuplicateException;
+import mustodo.backend.exception.user.UserNameDuplicateException;
+import mustodo.backend.exception.user.UserNotFoundException;
 import mustodo.backend.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static mustodo.backend.enums.auth.LoginErrorCode.NOT_AUTHORIZED_USER;
-import static mustodo.backend.enums.auth.LoginErrorCode.PASSWORD_NOT_CORRECT;
-import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_EMAIL;
-import static mustodo.backend.enums.auth.SignUpErrorCode.ALREADY_EXISTS_NAME;
-import static mustodo.backend.enums.auth.SignUpErrorCode.INVALID_EMAIL_AUTH_KEY;
-import static mustodo.backend.enums.auth.SignUpErrorCode.PASSWORD_CONFIRM_FAILED;
-import static mustodo.backend.enums.auth.SignUpErrorCode.UNCHECK_TERMS_AND_CONDITION;
-import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_FAILED;
 import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
-import static mustodo.backend.enums.response.AuthResponseMsg.LOGIN_FAILED;
-import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_FAILED;
 import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_SUCCESS;
 
 @Slf4j
@@ -42,8 +37,7 @@ public class AuthService {
 
     @Transactional
     public User login(LoginDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new AuthException2(LOGIN_FAILED, LoginErrorCode.NOT_EXIST_EMAIL));
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(IdPasswordNotCorrectException::new);
         validatePassword(dto, user.getPassword());
         validateAuthorizedUser(user);
 
@@ -54,31 +48,28 @@ public class AuthService {
         if (!user.isAuthorizedUser()) {
             String emailAuthKey = emailAuthSender.sendAuthMail(user);
             user.setEmailAuthKey(emailAuthKey);
-            throw new AuthException2(LOGIN_FAILED, NOT_AUTHORIZED_USER);
+            throw new NotAuthorizedException();
         }
     }
 
     private void validatePassword(LoginDto dto, String password) {
         if (!passwordEncoder.matches(dto.getPassword(), password)) {
-            throw new AuthException2(LOGIN_FAILED, PASSWORD_NOT_CORRECT);
+            throw new IdPasswordNotCorrectException();
         }
     }
 
     @Transactional
     public MessageDto authorizeUser(EmailAuthDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new AuthException2(EMAIL_AUTH_FAILED, SignUpErrorCode.NOT_EXIST_EMAIL));
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new UserNotFoundException(dto.getEmail()));
         validateEmailKey(dto, user.getEmailAuthKey());
 
         user.authorizeUser();
-        return MessageDto.builder()
-                .message(EMAIL_AUTH_SUCCESS)
-                .build();
+        return MessageDto.builder().message(EMAIL_AUTH_SUCCESS).build();
     }
 
     private void validateEmailKey(EmailAuthDto dto, String emailAuthKey) {
         if (!dto.getAuthKey().equals(emailAuthKey)) {
-            throw new AuthException2(EMAIL_AUTH_FAILED, INVALID_EMAIL_AUTH_KEY);
+            throw new InvalidEmailAuthKeyException(emailAuthKey);
         }
     }
 
@@ -94,20 +85,12 @@ public class AuthService {
         User saveUser = userRepository.save(user);
         saveUser.setEmailAuthKey(emailAuthKey);
 
-        return MessageDto.builder()
-                .message(SIGN_UP_SUCCESS)
-                .build();
+        return MessageDto.builder().message(SIGN_UP_SUCCESS).build();
     }
 
     private User toUserEntity(SignUpRequestDto dto, String encodedPassword) {
         EmailAuth emailAuth = new EmailAuth(null, false);
-        return User.builder()
-                .email(dto.getEmail())
-                .name(dto.getName())
-                .password(encodedPassword)
-                .role(Role.USER)
-                .emailAuth(emailAuth)
-                .build();
+        return User.builder().email(dto.getEmail()).name(dto.getName()).password(encodedPassword).role(Role.USER).emailAuth(emailAuth).build();
     }
 
     private String encodePassword(String password) {
@@ -123,7 +106,7 @@ public class AuthService {
 
     private void validateName(SignUpRequestDto dto) {
         if (userRepository.existsByName(dto.getName())) {
-            throw new AuthException2(SIGN_UP_FAILED, ALREADY_EXISTS_NAME);
+            throw new UserNameDuplicateException(dto.getName());
         }
     }
 
@@ -131,19 +114,19 @@ public class AuthService {
         String password = dto.getPassword();
 
         if (!password.equals(dto.getPasswordConfirm())) {
-            throw new AuthException2(SIGN_UP_FAILED, PASSWORD_CONFIRM_FAILED);
+            throw new PasswordConfirmException();
         }
     }
 
     private void validateEmail(SignUpRequestDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new AuthException2(SIGN_UP_FAILED, ALREADY_EXISTS_EMAIL);
+            throw new EmailDuplicateException(dto.getEmail());
         }
     }
 
     private void validateTermsAndCondition(boolean termsAndConditions) {
         if (!termsAndConditions) {
-            throw new AuthException2(SIGN_UP_FAILED, UNCHECK_TERMS_AND_CONDITION);
+            throw new UncheckTermsAndConditionException();
         }
     }
 }

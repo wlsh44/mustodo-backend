@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import mustodo.backend.auth.ui.AuthController;
-import mustodo.backend.dto.ErrorDto;
+import mustodo.backend.dto.ErrorResponse;
 import mustodo.backend.dto.MessageDto;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
@@ -134,7 +134,7 @@ class AuthControllerTest {
                     .passwordConfirm("test")
                     .termsAndConditions(true)
                     .build();
-            ErrorDto expect = ErrorDto.builder()
+            ErrorResponse expect = ErrorResponse.builder()
                     .message(INVALID_ARGUMENT_ERROR)
                     .build();
 
@@ -147,7 +147,7 @@ class AuthControllerTest {
                     .andReturn();
 
             //then
-            ErrorDto messageDto = getErrorDto(mvcResult);
+            ErrorResponse messageDto = getErrorDto(mvcResult);
             assertThat(messageDto).isEqualTo(expect);
         }
 
@@ -289,7 +289,7 @@ class AuthControllerTest {
                     .email("test@test.test")
                     .authKey("123")
                     .build();
-            ErrorDto expect = ErrorDto.builder()
+            ErrorResponse expect = ErrorResponse.builder()
                     .message(INVALID_ARGUMENT_ERROR)
                     .build();
 
@@ -301,7 +301,7 @@ class AuthControllerTest {
                     .andExpect(status().isBadRequest())
                     .andReturn();
 
-            ErrorDto messageDto = getErrorDto(mvcResult);
+            ErrorResponse messageDto = getErrorDto(mvcResult);
             assertThat(messageDto).isEqualTo(expect);
         }
 
@@ -407,7 +407,7 @@ class AuthControllerTest {
                     .email("test@test.test")
                     .password("test")
                     .build();
-            ErrorDto message = ErrorDto.builder()
+            ErrorResponse message = ErrorResponse.builder()
                     .message(LOGIN_FAILED)
                     .errorCode(LOGIN_FAILED_ERROR)
                     .build();
@@ -433,7 +433,7 @@ class AuthControllerTest {
                     .email("test@test.test")
                     .password("test")
                     .build();
-            ErrorDto message = ErrorDto.builder()
+            ErrorResponse message = ErrorResponse.builder()
                     .message(LOGIN_FAILED)
                     .errorCode(LOGIN_FAILED_ERROR)
                     .build();
@@ -459,7 +459,7 @@ class AuthControllerTest {
                     .email("test@test.test")
                     .password("test")
                     .build();
-            ErrorDto message = ErrorDto.builder()
+            ErrorResponse message = ErrorResponse.builder()
                     .message(LOGIN_FAILED)
                     .errorCode(NOT_AUTHORIZED_USER)
                     .build();
@@ -533,8 +533,8 @@ class AuthControllerTest {
         return objectMapper.readValue(contentAsByteArray, MessageDto.class);
     }
 
-    private ErrorDto getErrorDto(MvcResult mvcResult) throws java.io.IOException {
+    private ErrorResponse getErrorDto(MvcResult mvcResult) throws java.io.IOException {
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
-        return objectMapper.readValue(contentAsByteArray, ErrorDto.class);
+        return objectMapper.readValue(contentAsByteArray, ErrorResponse.class);
     }
 }
