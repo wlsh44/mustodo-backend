@@ -2,6 +2,7 @@ package mustodo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mustodo.backend.auth.domain.User;
+import mustodo.backend.dto.ErrorResponse;
 import mustodo.backend.exception.auth.NotAuthorizedException;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.todo.ui.CategoryController;
@@ -41,11 +42,11 @@ class CategoryControllerTest {
         @Test
         void saveTest() throws Exception {
             NotAuthorizedException e = new NotAuthorizedException();
-
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
             //when then
             mockMvc.perform(post("/api/category"))
                     .andDo(print())
-                    .andExpect(content().json(mapper.writeValueAsString(e.getErrorCode())));
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
         }
     }
 }
