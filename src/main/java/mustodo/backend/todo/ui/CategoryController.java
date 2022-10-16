@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.todo.application.CategoryService;
-import mustodo.backend.auth.application.resolver.Login;
+import mustodo.backend.auth.ui.resolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

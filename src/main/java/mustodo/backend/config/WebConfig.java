@@ -1,7 +1,7 @@
 package mustodo.backend.config;
 
-import mustodo.backend.auth.application.interceptor.AuthInterceptor;
-import mustodo.backend.auth.application.resolver.LoginArgumentResolver;
+import mustodo.backend.auth.ui.interceptor.AuthInterceptor;
+import mustodo.backend.auth.ui.resolver.LoginArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

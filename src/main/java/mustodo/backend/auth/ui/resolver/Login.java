@@ -1,4 +1,4 @@
-package mustodo.backend.auth.application.resolver;
+package mustodo.backend.auth.ui.resolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

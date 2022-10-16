@@ -1,4 +1,4 @@
-package mustodo.backend.auth.application.resolver;
+package mustodo.backend.auth.ui.resolver;
 
 import mustodo.backend.auth.domain.User;
 import org.springframework.core.MethodParameter;
