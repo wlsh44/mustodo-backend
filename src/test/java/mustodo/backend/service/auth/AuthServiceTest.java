@@ -1,15 +1,16 @@
 package mustodo.backend.service.auth;
 
+import mustodo.backend.auth.application.AuthService;
 import mustodo.backend.dto.MessageDto;
-import mustodo.backend.dto.auth.EmailAuthDto;
-import mustodo.backend.dto.auth.LoginDto;
-import mustodo.backend.dto.auth.SignUpRequestDto;
-import mustodo.backend.entity.User;
-import mustodo.backend.entity.embedded.EmailAuth;
+import mustodo.backend.auth.ui.dto.EmailAuthDto;
+import mustodo.backend.auth.ui.dto.LoginDto;
+import mustodo.backend.auth.ui.dto.SignUpRequestDto;
+import mustodo.backend.auth.domain.User;
+import mustodo.backend.auth.domain.embedded.EmailAuth;
 import mustodo.backend.enums.error.LoginErrorCode;
 import mustodo.backend.exception.AuthException;
-import mustodo.backend.repository.UserRepository;
-import mustodo.backend.service.auth.mail.EmailAuthSender;
+import mustodo.backend.user.UserRepository;
+import mustodo.backend.auth.application.mail.EmailAuthSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

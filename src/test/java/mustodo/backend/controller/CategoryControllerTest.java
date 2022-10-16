@@ -2,9 +2,10 @@ package mustodo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mustodo.backend.dto.ErrorDto;
-import mustodo.backend.entity.User;
+import mustodo.backend.auth.domain.User;
 import mustodo.backend.enums.error.BasicErrorCode;
-import mustodo.backend.service.todo.CategoryService;
+import mustodo.backend.todo.application.CategoryService;
+import mustodo.backend.todo.ui.CategoryController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static mustodo.backend.enums.response.AuthResponseMsg.NOT_AUTHORIZED_USER_ACCESS;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

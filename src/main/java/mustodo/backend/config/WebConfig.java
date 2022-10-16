@@ -1,7 +1,7 @@
 package mustodo.backend.config;
 
-import mustodo.backend.service.auth.interceptor.AuthInterceptor;
-import mustodo.backend.service.auth.resolver.LoginArgumentResolver;
+import mustodo.backend.auth.application.interceptor.AuthInterceptor;
+import mustodo.backend.auth.application.resolver.LoginArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -21,6 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AuthInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth");
+                .excludePathPatterns("/auth/**");
     }
 }

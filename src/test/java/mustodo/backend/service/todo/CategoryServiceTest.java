@@ -1,9 +1,10 @@
 package mustodo.backend.service.todo;
 
 import mustodo.backend.dto.MessageDto;
-import mustodo.backend.dto.category.NewCategoryDto;
-import mustodo.backend.entity.User;
-import mustodo.backend.repository.CategoryRepository;
+import mustodo.backend.todo.application.CategoryService;
+import mustodo.backend.todo.ui.dto.NewCategoryDto;
+import mustodo.backend.auth.domain.User;
+import mustodo.backend.todo.domain.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static mustodo.backend.enums.response.CategoryResponseMsg.CREATE_CATEGORY_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
