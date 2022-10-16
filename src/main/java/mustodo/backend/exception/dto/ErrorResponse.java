@@ -1,4 +1,4 @@
-package mustodo.backend.dto;
+package mustodo.backend.exception.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

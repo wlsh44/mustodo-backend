@@ -1,7 +1,7 @@
 package mustodo.backend.exception.advice;
 
 import lombok.extern.slf4j.Slf4j;
-import mustodo.backend.dto.ErrorResponse;
+import mustodo.backend.exception.dto.ErrorResponse;
 import mustodo.backend.exception.TodoException;
 import mustodo.backend.exception.auth.AuthException;
 import mustodo.backend.exception.user.UserException;

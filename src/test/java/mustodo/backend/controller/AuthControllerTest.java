@@ -2,7 +2,7 @@ package mustodo.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mustodo.backend.auth.ui.AuthController;
-import mustodo.backend.dto.ErrorResponse;
+import mustodo.backend.exception.dto.ErrorResponse;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
