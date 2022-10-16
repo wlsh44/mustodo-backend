@@ -1,7 +1,6 @@
 package mustodo.backend.service.auth;
 
 import mustodo.backend.auth.application.AuthService;
-import mustodo.backend.dto.MessageDto;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
@@ -31,8 +30,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static mustodo.backend.enums.response.AuthResponseMsg.EMAIL_AUTH_SUCCESS;
-import static mustodo.backend.enums.response.AuthResponseMsg.SIGN_UP_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -197,10 +194,9 @@ class AuthServiceTest {
                     .willReturn(Optional.of(user));
 
             //when
-            MessageDto messageDto = authService.authorizeUser(dto);
+            authService.authorizeUser(dto);
 
             //then
-            assertThat(messageDto.getMessage()).isEqualTo(EMAIL_AUTH_SUCCESS.getResMsg());
             assertThat(user.isAuthorizedUser()).isTrue();
         }
 
@@ -264,6 +260,7 @@ class AuthServiceTest {
         void signUpSuccessTest() {
             //given
             user = User.builder()
+                    .id(1L)
                     .emailAuth(new EmailAuth(null, false))
                     .build();
             given(userRepository.existsByEmail(dto.getEmail()))
@@ -276,10 +273,10 @@ class AuthServiceTest {
                     .willReturn("123456");
 
             //when
-            MessageDto messageDto = authService.signUp(dto);
+            Long userId = authService.signUp(dto);
 
             //then
-            assertThat(messageDto.getMessage()).isEqualTo(SIGN_UP_SUCCESS.getResMsg());
+            assertThat(userId).isEqualTo(1L);
         }
 
         @Test

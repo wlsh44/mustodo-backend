@@ -37,6 +37,7 @@ import static mustodo.backend.enums.error.BasicErrorCode.INVALID_ARGUMENT_ERROR;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -248,8 +249,7 @@ class AuthControllerTest {
             //given
             EmailSendFailException e = new EmailSendFailException();
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
-            given(authService.authorizeUser(dto))
-                    .willThrow(e);
+            doThrow(e).when(authService).authorizeUser(dto);
 
             //when then
             mockMvc.perform(patch(uri)
@@ -266,8 +266,8 @@ class AuthControllerTest {
             //given
             EmailMessageCreateFailException e = new EmailMessageCreateFailException();
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
-            given(authService.authorizeUser(dto))
-                    .willThrow(e);
+            doThrow(e).when(authService).authorizeUser(dto);
+
 
             //when then
             mockMvc.perform(patch(uri)
