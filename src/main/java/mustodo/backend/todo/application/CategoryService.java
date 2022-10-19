@@ -27,6 +27,7 @@ public class CategoryService {
                 .name(dto.getName())
                 .color(dto.getColor())
                 .user(user)
+                .publicAccess(false)
                 .build();
     }
 }
