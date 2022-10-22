@@ -29,7 +29,7 @@ public class Category {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @Column(length = 6)
+    @Column(length = 7)
     private String color;
 
     @Column(name = "is_public", nullable = false)

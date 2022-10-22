@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
+import mustodo.backend.todo.ui.dto.validator.HexColor;
 
 import javax.validation.constraints.NotNull;
 
@@ -21,7 +21,7 @@ public class UpdateCategoryDto {
     private String name;
 
     @NotNull
-    @Length(min = 6, max = 6)
+    @HexColor
     private String color;
 
     @NotNull
