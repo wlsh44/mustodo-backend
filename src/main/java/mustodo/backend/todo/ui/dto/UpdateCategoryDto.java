@@ -1,5 +1,6 @@
 package mustodo.backend.todo.ui.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewCategoryDto {
+public class UpdateCategoryDto {
 
     @NotNull
     private String name;
@@ -22,4 +23,8 @@ public class NewCategoryDto {
     @NotNull
     @HexColor
     private String color;
+
+    @NotNull
+    @JsonProperty(value = "isPublic")
+    private boolean publicAccess;
 }
