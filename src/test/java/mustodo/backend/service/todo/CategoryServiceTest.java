@@ -109,7 +109,7 @@ class CategoryServiceTest {
                     .willReturn(Optional.of(category));
 
             //when
-            categoryService.update(user, dto, categoryId);
+            categoryService.update(user, categoryId, dto);
 
             //then
             assertThat(category.getName()).isEqualTo("newName");
@@ -126,7 +126,7 @@ class CategoryServiceTest {
                     .willReturn(Optional.empty());
 
             //when then
-            assertThatThrownBy(() -> categoryService.update(user, dto, categoryId))
+            assertThatThrownBy(() -> categoryService.update(user, categoryId, dto))
                     .isInstanceOf(e.getClass())
                     .hasMessage(e.getMessage());
             assertThat(category.getName()).isEqualTo("test");
