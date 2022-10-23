@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
+import javax.validation.ConstraintDefinitionException;
+import javax.validation.ValidationException;
+
 import static mustodo.backend.exception.enums.BasicErrorCode.INVALID_ARGUMENT_ERROR;
 
 @Slf4j
@@ -19,6 +22,14 @@ public class MustodoControllerAdvice {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> bindingException(BindException e) {
+        String errMsg = e.getMessage();
+        log.error(errMsg);
+
+        return ResponseEntity.badRequest().body(new ErrorResponse(INVALID_ARGUMENT_ERROR));
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> bindingException(ValidationException e) {
         String errMsg = e.getMessage();
         log.error(errMsg);
 

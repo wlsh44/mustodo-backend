@@ -34,7 +34,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public void update(User user, UpdateCategoryDto dto, Long categoryId) {
+    public void update(User user, Long categoryId, UpdateCategoryDto dto) {
         Category category = categoryRepository.findByIdAndUser(categoryId, user)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
