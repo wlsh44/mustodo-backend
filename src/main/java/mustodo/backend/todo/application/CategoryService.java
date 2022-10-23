@@ -2,6 +2,7 @@ package mustodo.backend.todo.application;
 
 import lombok.RequiredArgsConstructor;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
+import mustodo.backend.todo.ui.dto.CategoryResponse;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
 import mustodo.backend.todo.domain.Category;
 import mustodo.backend.auth.domain.User;
@@ -39,5 +40,12 @@ public class CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         category.update(dto);
+    }
+
+    public CategoryResponse find(User user, Long categoryId) {
+        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+        return CategoryResponse.from(category);
     }
 }
