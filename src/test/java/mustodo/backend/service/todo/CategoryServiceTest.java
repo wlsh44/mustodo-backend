@@ -3,6 +3,7 @@ package mustodo.backend.service.todo;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.todo.domain.Category;
+import mustodo.backend.todo.ui.dto.CategoryResponse;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.todo.domain.CategoryRepository;
@@ -40,6 +41,12 @@ class CategoryServiceTest {
     void init() {
         user = User.builder()
                 .build();
+        category = Category.builder()
+                .id(1L)
+                .name("test")
+                .color("FFFFFF")
+                .user(user)
+                .build();
     }
 
     @Nested
@@ -54,12 +61,6 @@ class CategoryServiceTest {
             dto = NewCategoryDto.builder()
                     .name("test")
                     .color("FFFFFF")
-                    .build();
-            category = Category.builder()
-                    .id(1L)
-                    .name("test")
-                    .color("FFFFFF")
-                    .user(user)
                     .build();
         }
 
@@ -88,12 +89,6 @@ class CategoryServiceTest {
         @BeforeEach
         void init() {
             categoryId = 1L;
-            category = Category.builder()
-                    .name("test")
-                    .color("FFFFFF")
-                    .publicAccess(false)
-                    .user(user)
-                    .build();
             dto = UpdateCategoryDto.builder()
                     .name("newName")
                     .color("000000")
@@ -132,6 +127,45 @@ class CategoryServiceTest {
             assertThat(category.getName()).isEqualTo("test");
             assertThat(category.getColor()).isEqualTo("FFFFFF");
             assertThat(category.isPublicAccess()).isFalse();
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리 조회 테스트")
+    class FindTest {
+
+        Long categoryId;
+
+        @BeforeEach
+        void init() {
+            categoryId = 1L;
+        }
+
+        @Test
+        @DisplayName("조회 성공")
+        void findSuccess() {
+            //given
+            CategoryResponse expect = CategoryResponse.from(category);
+            given(categoryRepository.findByIdAndUser(categoryId, user))
+                    .willReturn(Optional.of(category));
+
+            //when
+            CategoryResponse categoryResponse = categoryService.find(user, categoryId);
+
+            assertThat(categoryResponse).isEqualTo(expect);
+        }
+
+        @Test
+        @DisplayName("조회 실패 - 없는 카테고리")
+        void findFail_notExistCategory() {
+            //given
+            CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
+            given(categoryRepository.findByIdAndUser(categoryId, user))
+                    .willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> categoryService.find(user, categoryId))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
         }
     }
 }
