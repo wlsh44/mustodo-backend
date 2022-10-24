@@ -58,4 +58,11 @@ public class CategoryService {
                 .map(CategoryResponse::from)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void delete(User user, Long categoryId) {
+        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+        categoryRepository.delete(category);
+    }
 }
