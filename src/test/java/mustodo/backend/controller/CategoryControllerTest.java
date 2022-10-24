@@ -9,6 +9,7 @@ import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.todo.domain.Category;
 import mustodo.backend.todo.ui.CategoryController;
+import mustodo.backend.todo.ui.dto.CategoryResponse;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
 import mustodo.backend.todo.ui.dto.UpdateCategoryDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static mustodo.backend.auth.ui.AuthController.LOGIN_SESSION_ID;
 import static mustodo.backend.exception.enums.BasicErrorCode.INVALID_ARGUMENT_ERROR;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -57,25 +60,43 @@ class CategoryControllerTest {
 
     String uri;
 
+
     @BeforeEach
     void init() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .build();
+        user = User.builder()
+                .id(1L)
+                .email("test@test.test")
+                .name("test")
+                .emailAuth(new EmailAuth("123123", true))
+                .password("test")
+                .build();
+        session = new MockHttpSession();
+        session.setAttribute(LOGIN_SESSION_ID, user);
     }
 
     @Nested
     @DisplayName("로그인 안 된 유저")
     class NotLoginTest {
 
+
+        NotAuthorizedException e;
+
+        ErrorResponse errorResponse;
+
+        @BeforeEach
+        void init() {
+            session = new MockHttpSession();
+            e = new NotAuthorizedException();
+            errorResponse = new ErrorResponse(e.getErrorCode());
+        }
+
         @Test
         @DisplayName("카테고리 생성")
-        void saveTest_notLogin() throws Exception {
-            //given
-            NotAuthorizedException e = new NotAuthorizedException();
-            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
-
+        void save() throws Exception {
             //when then
             mockMvc.perform(post("/api/category"))
                     .andDo(print())
@@ -85,22 +106,32 @@ class CategoryControllerTest {
 
         @Test
         @DisplayName("카테고리 수정")
-        void updateTest_notLogin() throws Exception {
-            //given
-            NotAuthorizedException e = new NotAuthorizedException();
-            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
-
+        void update() throws Exception {
             //when then
             mockMvc.perform(put("/api/category/1"))
                     .andDo(print())
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
         }
+
+        @Test
+        @DisplayName("카테고리 하나 조회")
+        void find() throws Exception {
+            //when then
+            mockMvc.perform(get("/api/category/1"))
+                    .andDo(print())
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+
+        }
     }
 
     @Nested
     @DisplayName("권한 없는 유저")
     class UnAuthorizedUserTest {
+
+        NotAuthorizedException e;
+        ErrorResponse errorResponse;
 
         @BeforeEach
         void init() {
@@ -112,14 +143,13 @@ class CategoryControllerTest {
                     .emailAuth(new EmailAuth("123123", false))
                     .password("test")
                     .build();
+            e = new NotAuthorizedException();
+            errorResponse = new ErrorResponse(e.getErrorCode());
         }
 
         @Test
         @DisplayName("카테고리 생성")
-        void saveTest_unAuthorizedUser() throws Exception {
-            NotAuthorizedException e = new NotAuthorizedException();
-            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
-
+        void save() throws Exception {
             //when then
             mockMvc.perform(post("/api/category"))
                     .andDo(print())
@@ -129,12 +159,19 @@ class CategoryControllerTest {
 
         @Test
         @DisplayName("카테고리 수정")
-        void updateTest_unAuthorizedUser() throws Exception {
-            NotAuthorizedException e = new NotAuthorizedException();
-            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
-
+        void update() throws Exception {
             //when then
             mockMvc.perform(put("/api/category/1"))
+                    .andDo(print())
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+
+        @Test
+        @DisplayName("카테고리 하나 조회")
+        void find() throws Exception {
+            //when then
+            mockMvc.perform(get("/api/category/1"))
                     .andDo(print())
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
@@ -150,15 +187,6 @@ class CategoryControllerTest {
         @BeforeEach
         void init() {
             uri = "/api/category";
-            user = User.builder()
-                    .id(1L)
-                    .email("test@test.test")
-                    .name("test")
-                    .emailAuth(new EmailAuth("123123", true))
-                    .password("test")
-                    .build();
-            session = new MockHttpSession();
-            session.setAttribute(LOGIN_SESSION_ID, user);
         }
 
         @Test
@@ -190,6 +218,7 @@ class CategoryControllerTest {
                     .color("#0000000")
                     .build();
 
+            //when then
             mockMvc.perform(post(uri)
                             .session(session)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -209,15 +238,6 @@ class CategoryControllerTest {
         @BeforeEach
         void init() {
             uri = "/api/category/{categoryId}";
-            user = User.builder()
-                    .id(1L)
-                    .email("test@test.test")
-                    .name("test")
-                    .emailAuth(new EmailAuth("123123", true))
-                    .password("test")
-                    .build();
-            session = new MockHttpSession();
-            session.setAttribute(LOGIN_SESSION_ID, user);
         }
 
         @Test
@@ -230,6 +250,7 @@ class CategoryControllerTest {
                     .publicAccess(true)
                     .build();
 
+            //when then
             mockMvc.perform(put(uri, 1)
                             .session(session)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -250,6 +271,7 @@ class CategoryControllerTest {
                     .publicAccess(true)
                     .build();
 
+            //when then
             mockMvc.perform(put(uri, 1)
                             .session(session)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -272,10 +294,64 @@ class CategoryControllerTest {
                     .build();
             doThrow(e).when(categoryService).update(user, 1L, dto);
 
+            //when then
             mockMvc.perform(put(uri, 1)
                             .session(session)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(mapper.writeValueAsString(dto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(response)));
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리 하나 조회")
+    class FindTest {
+
+        Long categoryId;
+
+        @BeforeEach
+        void init() {
+            uri = "/api/category/{categoryId}";
+            categoryId = 1L;
+            category = Category.builder()
+                    .id(1L)
+                    .name("test")
+                    .publicAccess(false)
+                    .color("#FFFFFF")
+                    .user(user)
+                    .build();
+        }
+
+        @Test
+        @DisplayName("조회 성공")
+        void findSuccess() throws Exception {
+            //given
+            CategoryResponse expect = CategoryResponse.from(category);
+            given(categoryService.find(user, categoryId))
+                    .willReturn(CategoryResponse.from(category));
+
+            //when then
+            mockMvc.perform(get(uri, categoryId)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(mapper.writeValueAsString(expect)));
+        }
+
+        @Test
+        @DisplayName("카테고리 조회 실패 - 없는 카테고리")
+        void updateFail_categoryNotFound() throws Exception {
+            //given
+            CategoryNotFoundException e = new CategoryNotFoundException(1L);
+            ErrorResponse response = new ErrorResponse(e.getErrorCode());
+            given(categoryService.find(user, categoryId))
+                    .willThrow(e);
+
+            //when then
+            mockMvc.perform(get(uri, categoryId)
+                            .session(session))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().json(mapper.writeValueAsString(response)));
