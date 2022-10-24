@@ -35,6 +35,7 @@ import static mustodo.backend.exception.enums.BasicErrorCode.INVALID_ARGUMENT_ER
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -137,6 +138,16 @@ class CategoryControllerTest {
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
         }
+
+        @Test
+        @DisplayName("카테고리 삭제")
+        void delete() throws Exception {
+            //when then
+            mockMvc.perform(get("/api/category/1"))
+                    .andDo(print())
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
     }
 
     @Nested
@@ -195,6 +206,16 @@ class CategoryControllerTest {
         void findAll() throws Exception {
             //when then
             mockMvc.perform(get("/api/category"))
+                    .andDo(print())
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+
+        @Test
+        @DisplayName("카테고리 삭제")
+        void delete() throws Exception {
+            //when then
+            mockMvc.perform(get("/api/category/1"))
                     .andDo(print())
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
@@ -382,49 +403,44 @@ class CategoryControllerTest {
     }
 
     @Nested
-    @DisplayName("카테고리 전체 조회")
-    class FindAllTest {
+    @DisplayName("카테고리 삭제 테스트")
+    class DeleteTest {
 
-        Category category1;
-        Category category2;
+        Long categoryId;
 
-        List<Category> categoryList;
         @BeforeEach
-
         void init() {
-            uri = "/api/category";
-            category1 = Category.builder()
-                    .id(1L)
-                    .name("test")
-                    .publicAccess(false)
-                    .color("#FFFFFF")
-                    .user(user)
-                    .build();
-            category2 = Category.builder()
-                    .id(2L)
-                    .name("test2")
-                    .publicAccess(false)
-                    .color("#000000")
-                    .user(user)
-                    .build();
-            categoryList = List.of(category1, category2);
+            categoryId = 1L;
+            uri = "/api/category/{categoryId}";
+        }
+
+        @Test
+        @DisplayName("삭제 성공")
+        void deleteSuccess() throws Exception {
+            //given
+
+            //when then
+            mockMvc.perform(delete(uri, categoryId)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(""));
         }
 
         @Test
         @DisplayName("카테고리 전체 조회 성공")
-        void findAllSuccess() throws Exception {
+        void deleteFail_notExistCategory() throws Exception {
             //given
-            List<CategoryResponse> expect = categoryList.stream()
-                    .map(CategoryResponse::from)
-                    .collect(Collectors.toList());
-            given(categoryService.findAll(user)).willReturn(expect);
+            CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            doThrow(e).when(categoryService).delete(user, categoryId);
 
             //when then
-            mockMvc.perform(get(uri)
+            mockMvc.perform(delete(uri, categoryId)
                             .session(session))
                     .andDo(print())
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(expect)));
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
         }
     }
 }

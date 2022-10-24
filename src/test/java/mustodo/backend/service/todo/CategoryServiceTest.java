@@ -1,5 +1,6 @@
 package mustodo.backend.service.todo;
 
+import mustodo.backend.exception.advice.dto.ErrorResponse;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.todo.domain.Category;
@@ -46,7 +47,7 @@ class CategoryServiceTest {
         category = Category.builder()
                 .id(1L)
                 .name("test")
-                .color("FFFFFF")
+                .color("#FFFFFF")
                 .user(user)
                 .build();
     }
@@ -62,7 +63,7 @@ class CategoryServiceTest {
         void init() {
             dto = NewCategoryDto.builder()
                     .name("test")
-                    .color("FFFFFF")
+                    .color("#FFFFFF")
                     .build();
         }
 
@@ -93,7 +94,7 @@ class CategoryServiceTest {
             categoryId = 1L;
             dto = UpdateCategoryDto.builder()
                     .name("newName")
-                    .color("000000")
+                    .color("#000000")
                     .publicAccess(true)
                     .build();
         }
@@ -110,7 +111,7 @@ class CategoryServiceTest {
 
             //then
             assertThat(category.getName()).isEqualTo("newName");
-            assertThat(category.getColor()).isEqualTo("000000");
+            assertThat(category.getColor()).isEqualTo("#000000");
             assertThat(category.isPublicAccess()).isTrue();
         }
 
@@ -127,7 +128,7 @@ class CategoryServiceTest {
                     .isInstanceOf(e.getClass())
                     .hasMessage(e.getMessage());
             assertThat(category.getName()).isEqualTo("test");
-            assertThat(category.getColor()).isEqualTo("FFFFFF");
+            assertThat(category.getColor()).isEqualTo("#FFFFFF");
             assertThat(category.isPublicAccess()).isFalse();
         }
     }
@@ -192,6 +193,43 @@ class CategoryServiceTest {
             //then
             assertThat(responseList).isEqualTo(expect);
         }
-
     }
+
+    @Nested
+    @DisplayName("카테고리 삭제 테스트")
+    class DeleteTest {
+
+        Long categoryId;
+
+        @BeforeEach
+        void init() {
+            categoryId = 1L;
+        }
+
+        @Test
+        @DisplayName("삭제 성공")
+        void deleteSuccess() {
+            //given
+            given(categoryRepository.findByIdAndUser(categoryId, user))
+                    .willReturn(Optional.of(category));
+
+            //when
+            categoryService.delete(user, categoryId);
+        }
+
+        @Test
+        @DisplayName("삭제 실패 - 없는 카테고리")
+        void deleteFail_notExistCategory() {
+            //given
+            CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
+            given(categoryRepository.findByIdAndUser(categoryId, user))
+                    .willReturn(Optional.empty());
+
+            //when
+            assertThatThrownBy(() -> categoryService.delete(user, categoryId))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
+
 }

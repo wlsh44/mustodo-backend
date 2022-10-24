@@ -9,6 +9,7 @@ import mustodo.backend.auth.ui.resolver.Login;
 import mustodo.backend.todo.ui.dto.UpdateCategoryDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,5 +51,10 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponse>> findAll(@Login User user) {
         List<CategoryResponse> categoryResponseList = categoryService.findAll(user);
         return ResponseEntity.ok(categoryResponseList);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public void delete(@Login User user, @PathVariable Long categoryId) {
+        categoryService.delete(user, categoryId);
     }
 }
