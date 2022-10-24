@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/category")
@@ -43,5 +44,11 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> find(@Login User user, @PathVariable Long categoryId) {
         CategoryResponse categoryResponse = categoryService.find(user, categoryId);
         return ResponseEntity.ok(categoryResponse);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<CategoryResponse>> findAll(@Login User user) {
+        List<CategoryResponse> categoryResponseList = categoryService.findAll(user);
+        return ResponseEntity.ok(categoryResponseList);
     }
 }

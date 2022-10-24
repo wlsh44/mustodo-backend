@@ -27,10 +27,14 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static mustodo.backend.auth.ui.AuthController.LOGIN_SESSION_ID;
 import static mustodo.backend.exception.enums.BasicErrorCode.INVALID_ARGUMENT_ERROR;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -122,7 +126,16 @@ class CategoryControllerTest {
                     .andDo(print())
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
 
+        @Test
+        @DisplayName("카테고리 전체 조회")
+        void findAll() throws Exception {
+            //when then
+            mockMvc.perform(get("/api/category"))
+                    .andDo(print())
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
         }
     }
 
@@ -172,6 +185,16 @@ class CategoryControllerTest {
         void find() throws Exception {
             //when then
             mockMvc.perform(get("/api/category/1"))
+                    .andDo(print())
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+
+        @Test
+        @DisplayName("카테고리 전체 조회")
+        void findAll() throws Exception {
+            //when then
+            mockMvc.perform(get("/api/category"))
                     .andDo(print())
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
@@ -355,6 +378,53 @@ class CategoryControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().json(mapper.writeValueAsString(response)));
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리 전체 조회")
+    class FindAllTest {
+
+        Category category1;
+        Category category2;
+
+        List<Category> categoryList;
+        @BeforeEach
+
+        void init() {
+            uri = "/api/category";
+            category1 = Category.builder()
+                    .id(1L)
+                    .name("test")
+                    .publicAccess(false)
+                    .color("#FFFFFF")
+                    .user(user)
+                    .build();
+            category2 = Category.builder()
+                    .id(2L)
+                    .name("test2")
+                    .publicAccess(false)
+                    .color("#000000")
+                    .user(user)
+                    .build();
+            categoryList = List.of(category1, category2);
+        }
+
+        @Test
+        @DisplayName("카테고리 전체 조회 성공")
+        void findAllSuccess() throws Exception {
+            //given
+            List<CategoryResponse> expect = categoryList.stream()
+                    .map(CategoryResponse::from)
+                    .collect(Collectors.toList());
+            given(categoryService.findAll(user)).willReturn(expect);
+
+            //when then
+            mockMvc.perform(get(uri)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(mapper.writeValueAsString(expect)));
         }
     }
 }

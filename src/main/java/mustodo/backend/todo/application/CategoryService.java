@@ -11,6 +11,9 @@ import mustodo.backend.todo.ui.dto.UpdateCategoryDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -47,5 +50,12 @@ public class CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         return CategoryResponse.from(category);
+    }
+
+    public List<CategoryResponse> findAll(User user) {
+        List<Category> categoryList = categoryRepository.findAllByUser(user);
+        return categoryList.stream()
+                .map(CategoryResponse::from)
+                .collect(Collectors.toList());
     }
 }
