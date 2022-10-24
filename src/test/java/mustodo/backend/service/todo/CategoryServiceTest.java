@@ -17,7 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -167,5 +169,29 @@ class CategoryServiceTest {
                     .isInstanceOf(e.getClass())
                     .hasMessage(e.getMessage());
         }
+    }
+
+    @Nested
+    @DisplayName("카테고리 전체 조회 테스트")
+    class FindAll {
+
+        @Test
+        @DisplayName("전체 조회 성공")
+        void findAllSuccess() {
+            //given
+            Category category1 = Category.builder().id(1L).build();
+            Category category2 = Category.builder().id(2L).build();
+            List<Category> categoryList = List.of(category1, category2);
+            List<CategoryResponse> expect = categoryList.stream().map(CategoryResponse::from)
+                    .collect(Collectors.toList());
+            given(categoryRepository.findAllByUser(user)).willReturn(categoryList);
+
+            //when
+            List<CategoryResponse> responseList = categoryService.findAll(user);
+
+            //then
+            assertThat(responseList).isEqualTo(expect);
+        }
+
     }
 }
