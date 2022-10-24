@@ -1,12 +1,15 @@
 package mustodo.backend.todo.ui;
 
 import lombok.RequiredArgsConstructor;
+import mustodo.backend.todo.ui.dto.CategoryResponse;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
 import mustodo.backend.auth.domain.User;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.auth.ui.resolver.Login;
 import mustodo.backend.todo.ui.dto.UpdateCategoryDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,5 +37,11 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     public void update(@Login User user, @PathVariable Long categoryId, @RequestBody @Valid UpdateCategoryDto dto) {
         categoryService.update(user, categoryId, dto);
+    }
+
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<CategoryResponse> find(@Login User user, @PathVariable Long categoryId) {
+        CategoryResponse categoryResponse = categoryService.find(user, categoryId);
+        return ResponseEntity.ok(categoryResponse);
     }
 }
