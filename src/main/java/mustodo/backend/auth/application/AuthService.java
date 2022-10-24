@@ -33,7 +33,8 @@ public class AuthService {
 
     @Transactional
     public User login(LoginDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(IdPasswordNotCorrectException::new);
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(IdPasswordNotCorrectException::new);
         validatePassword(dto, user.getPassword());
         validateAuthorizedUser(user);
 
@@ -56,7 +57,8 @@ public class AuthService {
 
     @Transactional
     public void authorizeUser(EmailAuthDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new UserNotFoundException(dto.getEmail()));
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new UserNotFoundException(dto.getEmail()));
         validateEmailKey(dto, user.getEmailAuthKey());
 
         user.authorizeUser();
