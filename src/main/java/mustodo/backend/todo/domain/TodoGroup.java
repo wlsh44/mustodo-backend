@@ -27,5 +27,5 @@ public class TodoGroup {
     private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalDate dueDate;
+    private LocalDate endDate;
 }
