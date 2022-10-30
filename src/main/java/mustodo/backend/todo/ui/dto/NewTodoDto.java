@@ -2,6 +2,7 @@ package mustodo.backend.todo.ui.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class NewTodoDto {
 
     @NotNull
@@ -34,20 +36,22 @@ public class NewTodoDto {
     private LocalDateTime alarm;
 
     private TodoRepeatDto todoRepeat;
+
+    @Getter
+    @ToString
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor
+    public static class TodoRepeatDto {
+
+        @NotNull
+        @NotEmpty
+        private List<DayOfWeek> repeatDay;
+
+        @NotNull
+        private LocalDate startDate;
+
+        @NotNull
+        private LocalDate endDate;
+    }
 }
 
-@Getter
-@ToString
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class TodoRepeatDto {
-
-    @NotNull
-    @NotEmpty
-    private List<DayOfWeek> repeatDay;
-
-    @NotNull
-    private LocalDate startDate;
-
-    @NotNull
-    private LocalDate endDate;
-}
