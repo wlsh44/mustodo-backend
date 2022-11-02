@@ -9,6 +9,8 @@ import mustodo.backend.todo.domain.Category;
 import mustodo.backend.todo.domain.Todo;
 import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;
 import mustodo.backend.todo.ui.dto.NewTodoDto;
+import mustodo.backend.todo.ui.dto.RepeatMeta;
+import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +35,9 @@ import java.util.List;
 import static mustodo.backend.auth.ui.AuthController.LOGIN_SESSION_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -136,7 +140,7 @@ class TodoControllerTest {
         void saveTodoSuccess() throws Exception {
             //given
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(1L, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
 
             //when then
             mockMvc.perform(post(uri)
@@ -156,7 +160,7 @@ class TodoControllerTest {
             CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(categoryId, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
             doThrow(e).when(todoService).saveRepeatTodo(any(), any());
 
             //when then
@@ -176,7 +180,7 @@ class TodoControllerTest {
             InvalidRepeatRangeException e = new InvalidRepeatRangeException();
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(1L, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now().plusDays(1), LocalDate.now()));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now().plusDays(1), LocalDate.now()));
             doThrow(e).when(todoService).saveRepeatTodo(any(), any());
 
             //when then
@@ -184,6 +188,55 @@ class TodoControllerTest {
                             .session(session)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(mapper.writeValueAsString(newTodoDto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+    }
+
+    @Nested
+    @DisplayName("카테고리 별 할 일 조회 테스트")
+    class FindByCategoryTest {
+
+        @BeforeEach
+        void init() {
+            uri = "/api/todo";
+        }
+
+        @Test
+        @DisplayName("조회 성공")
+        void success() throws Exception {
+            //given
+            Long categoryId = 1L;
+            List<TodoResponse> expect = List.of(
+                    new TodoResponse(1L, "할 일1", false),
+                    new TodoResponse(2L, "할 일2", true),
+                    new TodoResponse(3L, "할 일3", false)
+            );
+            given(todoService.findByCategory(user, categoryId)).willReturn(expect);
+
+            //when then
+            mockMvc.perform(get(uri)
+                            .queryParam("categoryId", String.valueOf(categoryId))
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(mapper.writeValueAsString(expect)));
+        }
+
+        @Test
+        @DisplayName("조회 실패 - 카테고리 없음")
+        void fail_categoryNotFound() throws Exception {
+            //given
+            long categoryId = 2L;
+            CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            given(todoService.findByCategory(user, categoryId)).willThrow(e);
+
+            //when then
+            mockMvc.perform(get(uri)
+                            .queryParam("categoryId", String.valueOf(categoryId))
+                            .session(session))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
