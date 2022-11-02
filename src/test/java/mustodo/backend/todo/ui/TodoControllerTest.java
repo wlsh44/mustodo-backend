@@ -9,6 +9,7 @@ import mustodo.backend.todo.domain.Category;
 import mustodo.backend.todo.domain.Todo;
 import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;
 import mustodo.backend.todo.ui.dto.NewTodoDto;
+import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import org.junit.jupiter.api.BeforeEach;
@@ -136,7 +137,7 @@ class TodoControllerTest {
         void saveTodoSuccess() throws Exception {
             //given
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(1L, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
 
             //when then
             mockMvc.perform(post(uri)
@@ -156,7 +157,7 @@ class TodoControllerTest {
             CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(categoryId, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
             doThrow(e).when(todoService).saveRepeatTodo(any(), any());
 
             //when then
@@ -176,7 +177,7 @@ class TodoControllerTest {
             InvalidRepeatRangeException e = new InvalidRepeatRangeException();
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(1L, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now().plusDays(1), LocalDate.now()));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now().plusDays(1), LocalDate.now()));
             doThrow(e).when(todoService).saveRepeatTodo(any(), any());
 
             //when then

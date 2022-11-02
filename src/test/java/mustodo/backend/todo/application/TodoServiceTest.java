@@ -1,5 +1,7 @@
 package mustodo.backend.todo.application;
 
+import mustodo.backend.todo.ui.dto.RepeatMeta;
+import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.Role;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
@@ -133,7 +135,7 @@ class TodoServiceTest {
             LocalDate startDate = LocalDate.of(2022, 10, 1);
             LocalDate endDate = LocalDate.of(2022, 10, 15);
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(1L, "할 일", false, localDateTimeNow,
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), startDate, endDate));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), startDate, endDate));
             TodoGroup todoGroup = new TodoGroup(1L, startDate, endDate);
             List<TodoGroup> expectTodoGroup = List.of(todoGroup);
             List<Todo> expectTodoList = List.of(
@@ -161,7 +163,7 @@ class TodoServiceTest {
             //given
             InvalidRepeatRangeException e = new InvalidRepeatRangeException();
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(1L, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY),
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY),
                             LocalDate.of(2022, 10, 15),
                             LocalDate.of(2022, 10, 1)));
 
@@ -178,7 +180,7 @@ class TodoServiceTest {
             long notExistId = 2L;
             CategoryNotFoundException e = new CategoryNotFoundException(notExistId);
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(notExistId, "할 일", false, LocalDateTime.now(),
-                    new NewRepeatTodoDto.RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
+                    new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), LocalDate.now(), LocalDate.now().plusDays(1)));
 
             //when then
             assertThatThrownBy(() -> todoService.saveRepeatTodo(user, newTodoDto))
@@ -186,4 +188,43 @@ class TodoServiceTest {
                     .hasMessage(e.getMessage());
         }
     }
+
+    @Nested
+    @DisplayName("카테고리 별 할 일 조회 테스트")
+    class FindAllByCategoryId {
+
+        @Test
+        @DisplayName("조회 성공")
+        void success() {
+            //given
+            List<TodoResponse> expect = List.of(
+                    TodoResponse.from(todoRepository.save(new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.now(), category, user, null))),
+                    TodoResponse.from(todoRepository.save(new Todo(2L, "할 일2", false, false, LocalDateTime.now(), LocalDate.now(), category, user, null))),
+                    TodoResponse.from(todoRepository.save(new Todo(3L, "할 일3", false, false, LocalDateTime.now(), LocalDate.now(), category, user, null))));
+
+            //when
+            List<TodoResponse> res = todoService.findByCategory(user, category.getId());
+
+            //then
+            assertThat(res).usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @Test
+        @DisplayName("조회 실패 - 없는 카테고리")
+        void fail_categoryNotFound() {
+            //given
+            long notExistId = 2L;
+            CategoryNotFoundException e = new CategoryNotFoundException(notExistId);
+            todoRepository.save(new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.now(), category, user, null));
+            todoRepository.save(new Todo(2L, "할 일2", false, false, LocalDateTime.now(), LocalDate.now(), category, user, null));
+            todoRepository.save(new Todo(3L, "할 일3", false, false, LocalDateTime.now(), LocalDate.now(), category, user, null));
+
+            //when then
+            assertThatThrownBy(() -> todoService.findByCategory(user, notExistId))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
+
 }

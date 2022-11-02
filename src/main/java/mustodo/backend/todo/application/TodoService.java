@@ -1,6 +1,7 @@
 package mustodo.backend.todo.application;
 
 import lombok.AllArgsConstructor;
+import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.exception.todo.InvalidRepeatRangeException;
@@ -46,7 +47,7 @@ public class TodoService {
         Category category = categoryRepository.findByIdAndUser(categoryId, user)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
-        NewRepeatTodoDto.RepeatMeta todoRepeat = dto.getRepeatMeta();
+        RepeatMeta todoRepeat = dto.getRepeatMeta();
         validateRepeatDateRange(todoRepeat);
 
         TodoGroup todoGroup = saveTodoGroup(todoRepeat);
@@ -63,18 +64,18 @@ public class TodoService {
         }
     }
 
-    private void validateRepeatDateRange(NewRepeatTodoDto.RepeatMeta todoRepeat) {
+    private void validateRepeatDateRange(RepeatMeta todoRepeat) {
         if (isStartDateGreaterThanEqualToEndDate(todoRepeat)) {
             throw new InvalidRepeatRangeException();
         }
     }
 
-    private boolean isStartDateGreaterThanEqualToEndDate(NewRepeatTodoDto.RepeatMeta todoRepeat) {
+    private boolean isStartDateGreaterThanEqualToEndDate(RepeatMeta todoRepeat) {
         return !todoRepeat.getEndDate().isAfter(todoRepeat.getStartDate());
     }
 
     @Transactional
-    public TodoGroup saveTodoGroup(NewRepeatTodoDto.RepeatMeta todoRepeat) {
+    public TodoGroup saveTodoGroup(RepeatMeta todoRepeat) {
         TodoGroup todoGroup = TodoGroup.builder()
                 .startDate(todoRepeat.getStartDate())
                 .endDate(todoRepeat.getEndDate())

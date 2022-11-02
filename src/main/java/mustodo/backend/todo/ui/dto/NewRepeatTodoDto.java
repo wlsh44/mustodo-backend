@@ -40,23 +40,6 @@ public class NewRepeatTodoDto {
     @NotNull
     private RepeatMeta repeatMeta;
 
-    @Getter
-    @ToString
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor
-    public static class RepeatMeta {
-
-        @NotNull
-        @NotEmpty
-        private List<DayOfWeek> repeatDay;
-
-        @NotNull
-        private LocalDate startDate;
-
-        @NotNull
-        private LocalDate endDate;
-    }
-
     public Todo toEntity(User user, Category category, LocalDate date, TodoGroup todoGroup) {
         return Todo.builder()
                 .content(content)
