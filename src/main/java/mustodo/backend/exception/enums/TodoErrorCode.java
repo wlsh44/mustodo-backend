@@ -1,7 +1,8 @@
 package mustodo.backend.exception.enums;
 
 public enum TodoErrorCode implements ErrorCode {
-    CATEGORY_NOT_FOUND("해당 카테고리가 존재하지 않습니다. id: %d");
+    CATEGORY_NOT_FOUND("해당 카테고리가 존재하지 않습니다. id: %d"),
+    INVALID_REPEAT_RANGE("올바른 반복 범위가 아닙니다.");
 
     private final String errMsg;
 
