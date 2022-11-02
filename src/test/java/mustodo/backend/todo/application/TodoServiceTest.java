@@ -1,6 +1,8 @@
 package mustodo.backend.todo.application;
 
+import mustodo.backend.exception.todo.InvalidDateFormatException;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
+import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.Role;
 import mustodo.backend.user.domain.User;
@@ -77,8 +79,8 @@ class TodoServiceTest {
                 .color("#000000")
                 .publicAccess(false)
                 .build();
-        userRepository.save(user);
-        categoryRepository.save(category);
+        user = userRepository.save(user);
+        category = categoryRepository.save(category);
     }
 
     @AfterEach
@@ -227,4 +229,57 @@ class TodoServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("날짜 별 조회 테스트")
+    class FindByDate {
+
+        Todo todo1_20221015;
+        Todo todo2_20221015;
+        Todo todo3_20221015;
+        Todo todo4_20221017;
+
+        Category category2;
+        @BeforeEach
+        void init() {
+            category2 = Category.builder()
+                    .name("category2")
+                    .user(user)
+                    .color("#FFFFFF")
+                    .publicAccess(true)
+                    .build();
+            category2 = categoryRepository.save(category2);
+            todo1_20221015 = todoRepository.save(new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+            todo2_20221015 = todoRepository.save(new Todo(2L, "할 일2", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category2, user, null));
+            todo3_20221015 = todoRepository.save(new Todo(3L, "할 일3", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+            todo4_20221017 = todoRepository.save(new Todo(4L, "할 일4", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 17), category, user, null));
+        }
+
+        @Test
+        @DisplayName("조회 성공")
+        void success() {
+            //given
+            String dateString = "2022-10-15";
+            List<TodoByDateResponse> expect = TodoByDateResponse.from(List.of(todo1_20221015, todo2_20221015, todo3_20221015));
+
+            //when
+            List<TodoByDateResponse> res = todoService.findByDate(user, dateString);
+
+            //then
+            assertThat(res).usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @Test
+        @DisplayName("조회 실패 - 잘못된 날짜 형식")
+        void fail_invalidDateFormat() {
+            //given
+            String wrongDateFormat = "wrongDateFormat";
+            InvalidDateFormatException e = new InvalidDateFormatException();
+
+            //when then
+            assertThatThrownBy(() -> todoService.findByDate(user, wrongDateFormat))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
 }
