@@ -1,6 +1,6 @@
 package mustodo.backend.auth.ui.resolver;
 
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

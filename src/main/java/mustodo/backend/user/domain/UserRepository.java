@@ -1,6 +1,6 @@
-package mustodo.backend.user;
+package mustodo.backend.user.domain;
 
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

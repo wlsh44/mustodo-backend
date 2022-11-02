@@ -1,4 +1,4 @@
-package mustodo.backend.auth.domain.embedded;
+package mustodo.backend.user.domain.embedded;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

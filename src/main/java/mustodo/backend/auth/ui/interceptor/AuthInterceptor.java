@@ -1,6 +1,6 @@
 package mustodo.backend.auth.ui.interceptor;
 
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import mustodo.backend.exception.auth.NotAuthorizedException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
