@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import mustodo.backend.todo.domain.Category;
 import mustodo.backend.todo.domain.Todo;
 

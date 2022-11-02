@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

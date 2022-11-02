@@ -1,7 +1,7 @@
 package mustodo.backend.todo.application;
 
 import lombok.AllArgsConstructor;
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.exception.todo.InvalidRepeatRangeException;
 import mustodo.backend.todo.domain.Category;

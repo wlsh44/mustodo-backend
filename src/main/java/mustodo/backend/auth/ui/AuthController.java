@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.application.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PatchMapping;

@@ -1,8 +1,8 @@
 package mustodo.backend.todo.application;
 
-import mustodo.backend.auth.domain.Role;
-import mustodo.backend.auth.domain.User;
-import mustodo.backend.auth.domain.embedded.EmailAuth;
+import mustodo.backend.user.domain.Role;
+import mustodo.backend.user.domain.User;
+import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.common.support.DatabaseClearer;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.exception.todo.InvalidRepeatRangeException;
@@ -14,7 +14,7 @@ import mustodo.backend.todo.domain.TodoGroupRepository;
 import mustodo.backend.todo.domain.TodoRepository;
 import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;
 import mustodo.backend.todo.ui.dto.NewTodoDto;
-import mustodo.backend.user.UserRepository;
+import mustodo.backend.user.domain.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

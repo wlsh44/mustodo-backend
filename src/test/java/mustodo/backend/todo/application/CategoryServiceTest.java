@@ -1,12 +1,10 @@
 package mustodo.backend.todo.application;
 
-import mustodo.backend.exception.advice.dto.ErrorResponse;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
-import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.todo.domain.Category;
 import mustodo.backend.todo.ui.dto.CategoryResponse;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import mustodo.backend.todo.domain.CategoryRepository;
 import mustodo.backend.todo.ui.dto.UpdateCategoryDto;
 import org.junit.jupiter.api.BeforeEach;

@@ -3,7 +3,7 @@ package mustodo.backend.todo.ui;
 import lombok.RequiredArgsConstructor;
 import mustodo.backend.todo.ui.dto.CategoryResponse;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.auth.ui.resolver.Login;
 import mustodo.backend.todo.ui.dto.UpdateCategoryDto;

@@ -2,8 +2,8 @@ package mustodo.backend.auth.application.mail;
 
 import mustodo.backend.config.EmailConfig;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
-import mustodo.backend.auth.domain.User;
-import mustodo.backend.auth.domain.embedded.EmailAuth;
+import mustodo.backend.user.domain.User;
+import mustodo.backend.user.domain.embedded.EmailAuth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

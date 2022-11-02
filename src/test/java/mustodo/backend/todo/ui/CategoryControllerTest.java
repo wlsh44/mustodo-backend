@@ -1,14 +1,13 @@
 package mustodo.backend.todo.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mustodo.backend.auth.domain.User;
-import mustodo.backend.auth.domain.embedded.EmailAuth;
+import mustodo.backend.user.domain.User;
+import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.exception.advice.dto.ErrorResponse;
 import mustodo.backend.exception.auth.NotAuthorizedException;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.todo.application.CategoryService;
 import mustodo.backend.todo.domain.Category;
-import mustodo.backend.todo.ui.CategoryController;
 import mustodo.backend.todo.ui.dto.CategoryResponse;
 import mustodo.backend.todo.ui.dto.NewCategoryDto;
 import mustodo.backend.todo.ui.dto.UpdateCategoryDto;
@@ -26,9 +25,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static mustodo.backend.auth.ui.AuthController.LOGIN_SESSION_ID;
 import static mustodo.backend.exception.enums.BasicErrorCode.INVALID_ARGUMENT_ERROR;

@@ -2,7 +2,7 @@ package mustodo.backend.todo.ui;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mustodo.backend.auth.domain.User;
+import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.ui.resolver.Login;
 import mustodo.backend.todo.application.TodoService;
 import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;

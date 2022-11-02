@@ -1,11 +1,10 @@
 package mustodo.backend.auth.application;
 
-import mustodo.backend.auth.application.AuthService;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
-import mustodo.backend.auth.domain.User;
-import mustodo.backend.auth.domain.embedded.EmailAuth;
+import mustodo.backend.user.domain.User;
+import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.exception.auth.EmailMessageCreateFailException;
 import mustodo.backend.exception.auth.EmailSendFailException;
 import mustodo.backend.exception.auth.IdPasswordNotCorrectException;
@@ -16,7 +15,7 @@ import mustodo.backend.exception.auth.UncheckTermsAndConditionException;
 import mustodo.backend.exception.user.EmailDuplicateException;
 import mustodo.backend.exception.user.UserNameDuplicateException;
 import mustodo.backend.exception.user.UserNotFoundException;
-import mustodo.backend.user.UserRepository;
+import mustodo.backend.user.domain.UserRepository;
 import mustodo.backend.auth.application.mail.EmailAuthSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
