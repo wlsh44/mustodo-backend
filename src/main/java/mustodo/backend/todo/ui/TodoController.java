@@ -1,6 +1,7 @@
 package mustodo.backend.todo.ui;
 
 import lombok.RequiredArgsConstructor;
+import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.ui.resolver.Login;
@@ -9,6 +10,7 @@ import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;
 import mustodo.backend.todo.ui.dto.NewTodoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,13 @@ public class TodoController {
     @GetMapping("")
     public ResponseEntity<List<TodoResponse>> findByCategory(@Login User user, @RequestParam Long categoryId) {
         List<TodoResponse> todoResponseList = todoService.findByCategory(user, categoryId);
+
+        return ResponseEntity.ok(todoResponseList);
+    }
+
+    @GetMapping("{date}")
+    public ResponseEntity<List<TodoByDateResponse>> findByDate(@Login User user, @PathVariable String date) {
+        List<TodoByDateResponse> todoResponseList = todoService.findByDate(user, date);
 
         return ResponseEntity.ok(todoResponseList);
     }

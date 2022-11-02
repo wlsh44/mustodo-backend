@@ -2,6 +2,7 @@ package mustodo.backend.todo.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mustodo.backend.user.domain.User;
@@ -18,6 +19,7 @@ import javax.persistence.ManyToOne;
 @Getter
 @Entity
 @Builder
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category {

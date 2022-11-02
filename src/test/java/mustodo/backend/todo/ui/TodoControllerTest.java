@@ -3,6 +3,7 @@ package mustodo.backend.todo.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mustodo.backend.exception.advice.dto.ErrorResponse;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
+import mustodo.backend.exception.todo.InvalidDateFormatException;
 import mustodo.backend.exception.todo.InvalidRepeatRangeException;
 import mustodo.backend.todo.application.TodoService;
 import mustodo.backend.todo.domain.Category;
@@ -10,6 +11,7 @@ import mustodo.backend.todo.domain.Todo;
 import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;
 import mustodo.backend.todo.ui.dto.NewTodoDto;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
+import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
@@ -236,6 +238,58 @@ class TodoControllerTest {
             //when then
             mockMvc.perform(get(uri)
                             .queryParam("categoryId", String.valueOf(categoryId))
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+    }
+
+    @Nested
+    @DisplayName("날짜 별 할 일 조회 테스트")
+    class FindByDateTest {
+
+        Category category1;
+        Category category2;
+
+        @BeforeEach
+        void init() {
+            uri = "/api/todo/{date}";
+            category1 = new Category(1L, "category1", "#FFFFFF", false, user);
+            category2 = new Category(2L, "category2", "#000000", true, user);
+        }
+
+        @Test
+        @DisplayName("조회 성공")
+        void success() throws Exception {
+            //given
+            String date = "2022-10-15";
+            List<TodoByDateResponse> expect = TodoByDateResponse.from(List.of(
+                    new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category1, user, null),
+                    new Todo(2L, "할 일2", true, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category1, user, null),
+                    new Todo(3L, "할 일3", true, true, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category2, user, null),
+                    new Todo(4L, "할 일4", false, true, LocalDateTime.now(), LocalDate.of(2022, 10, 17), category1, user, null)));
+            given(todoService.findByDate(user, date)).willReturn(expect);
+
+            //when then
+            mockMvc.perform(get(uri, date)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(mapper.writeValueAsString(expect)));
+        }
+
+        @Test
+        @DisplayName("조회 실패 - 잘못된 날짜 형식")
+        void fail_categoryNotFound() throws Exception {
+            //given
+            String wrongDateFormat = "asdfasdf";
+            InvalidDateFormatException e = new InvalidDateFormatException();
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            given(todoService.findByDate(user, wrongDateFormat)).willThrow(e);
+
+            //when then
+            mockMvc.perform(get(uri, wrongDateFormat)
                             .session(session))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
