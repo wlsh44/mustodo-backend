@@ -1,4 +1,4 @@
-package mustodo.backend.controller;
+package mustodo.backend.auth.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mustodo.backend.auth.ui.AuthController;

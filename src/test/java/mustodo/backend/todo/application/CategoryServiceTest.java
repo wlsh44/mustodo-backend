@@ -1,4 +1,4 @@
-package mustodo.backend.service.todo;
+package mustodo.backend.todo.application;
 
 import mustodo.backend.exception.advice.dto.ErrorResponse;
 import mustodo.backend.exception.todo.CategoryNotFoundException;

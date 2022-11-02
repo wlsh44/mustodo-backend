@@ -1,7 +1,5 @@
-package mustodo.backend.service.auth.mail;
+package mustodo.backend.auth.application.mail;
 
-import mustodo.backend.auth.application.mail.EmailAuthSender;
-import mustodo.backend.auth.application.mail.EmailKeyGenerator;
 import mustodo.backend.config.EmailConfig;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.domain.User;
