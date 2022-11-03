@@ -5,6 +5,7 @@ import mustodo.backend.exception.advice.dto.ErrorResponse;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.exception.todo.InvalidDateFormatException;
 import mustodo.backend.exception.todo.InvalidRepeatRangeException;
+import mustodo.backend.exception.todo.TodoNotFoundException;
 import mustodo.backend.todo.application.TodoService;
 import mustodo.backend.todo.domain.Category;
 import mustodo.backend.todo.domain.Todo;
@@ -39,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -290,6 +292,45 @@ class TodoControllerTest {
 
             //when then
             mockMvc.perform(get(uri, wrongDateFormat)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+    }
+
+    @Nested
+    @DisplayName("할 일 삭제 테스트")
+    class DeleteTodoTest {
+
+        @BeforeEach
+        void init() {
+            uri = "/api/todo/{todoId}";
+        }
+
+        @Test
+        @DisplayName("삭제 성공")
+        void success() throws Exception {
+            //given
+            Long todoId = 1L;
+
+            mockMvc.perform(delete(uri, todoId)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(""));
+        }
+
+        @Test
+        @DisplayName("삭제 실패 - 할 일 없음")
+        void fail_todoNotFound() throws Exception {
+            //given
+            Long todoId = 1L;
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            doThrow(e).when(todoService).deleteTodo(user, todoId);
+
+            mockMvc.perform(delete(uri, todoId)
                             .session(session))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
