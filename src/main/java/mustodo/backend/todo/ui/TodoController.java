@@ -9,6 +9,7 @@ import mustodo.backend.todo.application.TodoService;
 import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;
 import mustodo.backend.todo.ui.dto.NewTodoDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,10 +45,15 @@ public class TodoController {
         return ResponseEntity.ok(todoResponseList);
     }
 
-    @GetMapping("{date}")
+    @GetMapping("/{date}")
     public ResponseEntity<List<TodoByDateResponse>> findByDate(@Login User user, @PathVariable String date) {
         List<TodoByDateResponse> todoResponseList = todoService.findByDate(user, date);
 
         return ResponseEntity.ok(todoResponseList);
+    }
+
+    @DeleteMapping("/{todoId}")
+    public void deleteTodo(@Login User user, @PathVariable Long todoId) {
+        todoService.deleteTodo(user, todoId);
     }
 }
