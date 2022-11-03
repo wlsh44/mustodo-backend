@@ -2,6 +2,7 @@ package mustodo.backend.todo.application;
 
 import lombok.AllArgsConstructor;
 import mustodo.backend.exception.todo.InvalidDateFormatException;
+import mustodo.backend.exception.todo.TodoNotFoundException;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
@@ -121,5 +122,12 @@ public class TodoService {
         } catch (DateTimeParseException e) {
             throw new InvalidDateFormatException();
         }
+    }
+
+    @Transactional
+    public void deleteTodo(User user, Long todoId) {
+        Todo todo = todoRepository.findByUserAndId(user, todoId)
+                .orElseThrow(() -> new TodoNotFoundException(todoId));
+        todoRepository.delete(todo);
     }
 }
