@@ -1,6 +1,7 @@
 package mustodo.backend.todo.application;
 
 import mustodo.backend.exception.todo.InvalidDateFormatException;
+import mustodo.backend.exception.todo.TodoNotFoundException;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
@@ -278,6 +279,50 @@ class TodoServiceTest {
 
             //when then
             assertThatThrownBy(() -> todoService.findByDate(user, wrongDateFormat))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("할 일 삭제 테스트")
+    class DeleteTodoTest {
+
+        Todo todo1;
+        Todo todo2;
+        Todo todo3;
+
+        @BeforeEach
+        void init() {
+            todo1 = todoRepository.save(new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+            todo2 = todoRepository.save(new Todo(2L, "할 일2", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+            todo3 = todoRepository.save(new Todo(3L, "할 일3", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+        }
+
+        @Test
+        @DisplayName("삭제 성공")
+        void deleteSuccess() {
+            //given
+            Long todoId = 1L;
+            List<Todo> expect = List.of(todo2, todo3);
+
+            //when
+            todoService.deleteTodo(user, todoId);
+
+            //then
+            List<Todo> todoList = todoRepository.findAll();
+            assertThat(todoList).isEqualTo(expect);
+        }
+
+        @Test
+        @DisplayName("삭제 실패 - 할 일 없음")
+        void deleteFail_todoNotFound() {
+            //given
+            Long todoId = 4L;
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+
+            //when then
+            assertThatThrownBy(() -> todoService.deleteTodo(user, todoId))
                     .isInstanceOf(e.getClass())
                     .hasMessage(e.getMessage());
         }
