@@ -42,6 +42,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -331,6 +332,45 @@ class TodoControllerTest {
             doThrow(e).when(todoService).deleteTodo(user, todoId);
 
             mockMvc.perform(delete(uri, todoId)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+    }
+
+    @Nested
+    @DisplayName("할 일 체크 테스트")
+    class CheckAchieveTest {
+
+        @BeforeEach
+        void init() {
+            uri = "/api/todo/{todoId}";
+        }
+
+        @Test
+        @DisplayName("체크 성공")
+        void success() throws Exception {
+            //given
+            Long todoId = 1L;
+
+            mockMvc.perform(patch(uri, todoId)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(""));
+        }
+
+        @Test
+        @DisplayName("삭제 실패 - 할 일 없음")
+        void fail_todoNotFound() throws Exception {
+            //given
+            Long todoId = 1L;
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            doThrow(e).when(todoService).checkAchieve(user, todoId);
+
+            mockMvc.perform(patch(uri, todoId)
                             .session(session))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
