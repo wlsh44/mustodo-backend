@@ -56,4 +56,8 @@ public class Todo {
     @ManyToOne
     @JoinColumn(name = "todo_group_id")
     private TodoGroup todoGroup;
+
+    public void checkAchieve() {
+        this.achieve = !this.achieve;
+    }
 }

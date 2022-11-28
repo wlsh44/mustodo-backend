@@ -240,6 +240,7 @@ class TodoServiceTest {
         Todo todo4_20221017;
 
         Category category2;
+
         @BeforeEach
         void init() {
             category2 = Category.builder()
@@ -323,6 +324,42 @@ class TodoServiceTest {
 
             //when then
             assertThatThrownBy(() -> todoService.deleteTodo(user, todoId))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("checkAchieve 테스트")
+    class CheckAchieveTest {
+
+        Todo todo1;
+
+        @BeforeEach
+        void init() {
+            todo1 = todoRepository.save(new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+        }
+
+        @Test
+        @DisplayName("할 일 체크 성공")
+        void successTest() {
+            //when
+            todoService.checkAchieve(user, 1L);
+
+            //then
+            Todo todo = todoRepository.findById(1L).get();
+            assertThat(todo.isAchieve()).isTrue();
+        }
+
+        @Test
+        @DisplayName("할 일 체크 실패 - 없는 할 일")
+        void failTest_todoNotFound() {
+            //given
+            Long todoId = 2L;
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+
+            //when then
+            assertThatThrownBy(() -> todoService.checkAchieve(user, todoId))
                     .isInstanceOf(e.getClass())
                     .hasMessage(e.getMessage());
         }

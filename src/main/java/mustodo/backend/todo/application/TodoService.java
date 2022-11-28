@@ -130,4 +130,11 @@ public class TodoService {
                 .orElseThrow(() -> new TodoNotFoundException(todoId));
         todoRepository.delete(todo);
     }
+
+    @Transactional
+    public void checkAchieve(User user, Long todoId) {
+        Todo todo = todoRepository.findByUserAndId(user, todoId)
+                .orElseThrow(() -> new TodoNotFoundException(todoId));
+        todo.checkAchieve();
+    }
 }
