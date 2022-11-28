@@ -257,7 +257,7 @@ class TodoControllerTest {
 
         @BeforeEach
         void init() {
-            uri = "/api/todo/{date}";
+            uri = "/api/todo/date/{date}";
             category1 = new Category(1L, "category1", "#FFFFFF", false, user);
             category2 = new Category(2L, "category2", "#000000", true, user);
         }

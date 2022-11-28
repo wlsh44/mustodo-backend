@@ -47,7 +47,7 @@ public class TodoController {
         return ResponseEntity.ok(todoResponseList);
     }
 
-    @GetMapping("/{date}")
+    @GetMapping("/date/{date}")
     public ResponseEntity<List<TodoByDateResponse>> findByDate(@Login User user, @PathVariable String date) {
         List<TodoByDateResponse> todoResponseList = todoService.findByDate(user, date);
 
