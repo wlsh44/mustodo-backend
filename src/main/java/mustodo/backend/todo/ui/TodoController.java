@@ -2,6 +2,7 @@ package mustodo.backend.todo.ui;
 
 import lombok.RequiredArgsConstructor;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
+import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.ui.resolver.Login;
@@ -46,7 +47,7 @@ public class TodoController {
         return ResponseEntity.ok(todoResponseList);
     }
 
-    @GetMapping("/{date}")
+    @GetMapping("/date/{date}")
     public ResponseEntity<List<TodoByDateResponse>> findByDate(@Login User user, @PathVariable String date) {
         List<TodoByDateResponse> todoResponseList = todoService.findByDate(user, date);
 
@@ -61,5 +62,12 @@ public class TodoController {
     @PatchMapping("/{todoId}")
     public void checkAchieve(@Login User user, @PathVariable Long todoId) {
         todoService.checkAchieve(user, todoId);
+    }
+
+    @GetMapping("/{todoId}")
+    public ResponseEntity<TodoDetailResponse> findById(@Login User user, @PathVariable Long todoId) {
+        TodoDetailResponse todoDetailResponse = todoService.findById(user, todoId);
+
+        return ResponseEntity.ok(todoDetailResponse);
     }
 }

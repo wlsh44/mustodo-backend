@@ -4,6 +4,7 @@ import mustodo.backend.exception.todo.InvalidDateFormatException;
 import mustodo.backend.exception.todo.TodoNotFoundException;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
+import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.Role;
 import mustodo.backend.user.domain.User;
@@ -364,4 +365,45 @@ class TodoServiceTest {
                     .hasMessage(e.getMessage());
         }
     }
+
+    @Nested
+    @DisplayName("findById 테스트")
+    class FindById {
+
+        Todo todo1;
+        LocalDateTime now;
+        @BeforeEach
+        void init() {
+            now = LocalDateTime.now();
+            todo1 = todoRepository.save(new Todo(1L, "할 일1", false, false, now, LocalDate.of(2022, 10, 15), category, user, null));
+        }
+
+        @Test
+        @DisplayName("할 일 조회 성공")
+        void successTest() {
+            //given
+            Long todoId = 1L;
+            TodoDetailResponse expect = new TodoDetailResponse(todoId, category.getId(), null, "할 일1", false, false, now, LocalDate.of(2022, 10, 15));
+            //when
+            TodoDetailResponse res = todoService.findById(user, todoId);
+
+            //then
+            assertThat(res).usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @Test
+        @DisplayName("할 일 조회 실패 - 없는 할 일")
+        void failTest_todoNotFound() {
+            //given
+            Long todoId = 2L;
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+
+            //when then
+            assertThatThrownBy(() -> todoService.findById(user, todoId))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
+
 }

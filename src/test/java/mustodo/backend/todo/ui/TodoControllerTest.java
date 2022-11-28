@@ -13,6 +13,7 @@ import mustodo.backend.todo.ui.dto.NewRepeatTodoDto;
 import mustodo.backend.todo.ui.dto.NewTodoDto;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
+import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
@@ -257,7 +258,7 @@ class TodoControllerTest {
 
         @BeforeEach
         void init() {
-            uri = "/api/todo/{date}";
+            uri = "/api/todo/date/{date}";
             category1 = new Category(1L, "category1", "#FFFFFF", false, user);
             category2 = new Category(2L, "category2", "#000000", true, user);
         }
@@ -315,6 +316,7 @@ class TodoControllerTest {
             //given
             Long todoId = 1L;
 
+            //when then
             mockMvc.perform(delete(uri, todoId)
                             .session(session))
                     .andDo(print())
@@ -331,6 +333,7 @@ class TodoControllerTest {
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
             doThrow(e).when(todoService).deleteTodo(user, todoId);
 
+            //when then
             mockMvc.perform(delete(uri, todoId)
                             .session(session))
                     .andDo(print())
@@ -354,6 +357,7 @@ class TodoControllerTest {
             //given
             Long todoId = 1L;
 
+            //when then
             mockMvc.perform(patch(uri, todoId)
                             .session(session))
                     .andDo(print())
@@ -362,7 +366,7 @@ class TodoControllerTest {
         }
 
         @Test
-        @DisplayName("삭제 실패 - 할 일 없음")
+        @DisplayName("체크 실패 - 할 일 없음")
         void fail_todoNotFound() throws Exception {
             //given
             Long todoId = 1L;
@@ -370,7 +374,51 @@ class TodoControllerTest {
             ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
             doThrow(e).when(todoService).checkAchieve(user, todoId);
 
+            //when then
             mockMvc.perform(patch(uri, todoId)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+    }
+
+    @Nested
+    @DisplayName("할 일 조회 테스트")
+    class FindByIdTest {
+
+        @BeforeEach
+        void init() {
+            uri = "/api/todo/{todoId}";
+        }
+
+        @Test
+        @DisplayName("조회 성공")
+        void success() throws Exception {
+            //given
+            Long todoId = 1L;
+            TodoDetailResponse expect = new TodoDetailResponse(todoId, 1L, null, "할 일1", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15));
+            given(todoService.findById(user, todoId)).willReturn(expect);
+
+            //when then
+            mockMvc.perform(get(uri, todoId)
+                            .session(session))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(mapper.writeValueAsString(expect)));
+        }
+
+        @Test
+        @DisplayName("조회 실패 - 할 일 없음")
+        void fail_todoNotFound() throws Exception {
+            //given
+            Long todoId = 1L;
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            given(todoService.findById(user, todoId)).willThrow(e);
+
+            //when then
+            mockMvc.perform(get(uri, todoId)
                             .session(session))
                     .andDo(print())
                     .andExpect(status().isBadRequest())

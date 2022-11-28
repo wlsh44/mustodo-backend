@@ -5,6 +5,7 @@ import mustodo.backend.exception.todo.InvalidDateFormatException;
 import mustodo.backend.exception.todo.TodoNotFoundException;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
+import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
@@ -108,6 +109,7 @@ public class TodoService {
 
         return TodoResponse.from(todoList);
     }
+
     @Transactional(readOnly = true)
     public List<TodoByDateResponse> findByDate(User user, String dateString) {
         LocalDate date = parseDate(dateString);
@@ -136,5 +138,12 @@ public class TodoService {
         Todo todo = todoRepository.findByUserAndId(user, todoId)
                 .orElseThrow(() -> new TodoNotFoundException(todoId));
         todo.checkAchieve();
+    }
+
+    @Transactional(readOnly = true)
+    public TodoDetailResponse findById(User user, Long todoId) {
+        Todo todo = todoRepository.findByUserAndId(user, todoId)
+                .orElseThrow(() -> new TodoNotFoundException(todoId));
+        return TodoDetailResponse.from(todo);
     }
 }
