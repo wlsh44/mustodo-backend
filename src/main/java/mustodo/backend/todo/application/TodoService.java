@@ -7,6 +7,7 @@ import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
+import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.exception.todo.InvalidRepeatRangeException;
@@ -146,5 +147,15 @@ public class TodoService {
         Todo todo = todoRepository.findByUserAndId(user, todoId)
                 .orElseThrow(() -> new TodoNotFoundException(todoId));
         return TodoDetailResponse.from(todo);
+    }
+
+    @Transactional
+    public void update(User user, Long todoId, UpdateTodoDto dto) {
+        Todo todo = todoRepository.findByUserAndId(user, todoId)
+                .orElseThrow(() -> new TodoNotFoundException(todoId));
+        Category newCategory = categoryRepository.findByUserAndId(user, dto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(dto.getCategoryId()));
+
+        todo.update(dto, newCategory);
     }
 }

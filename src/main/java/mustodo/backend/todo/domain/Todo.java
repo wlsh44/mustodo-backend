@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
 
 import javax.persistence.Column;
@@ -59,5 +60,13 @@ public class Todo {
 
     public void checkAchieve() {
         this.achieve = !this.achieve;
+    }
+
+    public void update(UpdateTodoDto dto, Category category) {
+        this.content = dto.getContent();
+        this.dDay = dto.isDDay();
+        this.alarm = dto.getAlarm();
+        this.date = dto.getDate();
+        this.category = category;
     }
 }
