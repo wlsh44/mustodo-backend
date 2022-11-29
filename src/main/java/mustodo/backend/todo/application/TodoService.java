@@ -56,7 +56,7 @@ public class TodoService {
         RepeatMeta todoRepeat = dto.getRepeatMeta();
         validateRepeatDateRange(todoRepeat);
 
-        TodoGroup todoGroup = saveTodoGroup(todoRepeat);
+        TodoGroup todoGroup = saveTodoGroup(user, todoRepeat);
 
         List<DayOfWeek> repeatDay = todoRepeat.getRepeatDay();
         LocalDate date = todoGroup.getStartDate();
@@ -81,10 +81,11 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoGroup saveTodoGroup(RepeatMeta todoRepeat) {
+    public TodoGroup saveTodoGroup(User user, RepeatMeta todoRepeat) {
         TodoGroup todoGroup = TodoGroup.builder()
                 .startDate(todoRepeat.getStartDate())
                 .endDate(todoRepeat.getEndDate())
+                .user(user)
                 .build();
         todoGroup = todoGroupRepository.save(todoGroup);
         return todoGroup;
