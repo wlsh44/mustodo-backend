@@ -101,7 +101,7 @@ class CategoryServiceTest {
         @DisplayName("수정 성공")
         void updateSuccess() {
             //given
-            given(categoryRepository.findByIdAndUser(categoryId, user))
+            given(categoryRepository.findByUserAndId(user, categoryId))
                     .willReturn(Optional.of(category));
 
             //when
@@ -118,7 +118,7 @@ class CategoryServiceTest {
         void updateFail_categoryNotFound() {
             //given
             CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
-            given(categoryRepository.findByIdAndUser(categoryId, user))
+            given(categoryRepository.findByUserAndId(user, categoryId))
                     .willReturn(Optional.empty());
 
             //when then
@@ -147,7 +147,7 @@ class CategoryServiceTest {
         void findSuccess() {
             //given
             CategoryResponse expect = CategoryResponse.from(category);
-            given(categoryRepository.findByIdAndUser(categoryId, user))
+            given(categoryRepository.findByUserAndId(user, categoryId))
                     .willReturn(Optional.of(category));
 
             //when
@@ -161,7 +161,7 @@ class CategoryServiceTest {
         void findFail_notExistCategory() {
             //given
             CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
-            given(categoryRepository.findByIdAndUser(categoryId, user))
+            given(categoryRepository.findByUserAndId(user, categoryId))
                     .willReturn(Optional.empty());
 
             assertThatThrownBy(() -> categoryService.find(user, categoryId))
@@ -208,7 +208,7 @@ class CategoryServiceTest {
         @DisplayName("삭제 성공")
         void deleteSuccess() {
             //given
-            given(categoryRepository.findByIdAndUser(categoryId, user))
+            given(categoryRepository.findByUserAndId(user, categoryId))
                     .willReturn(Optional.of(category));
 
             //when
@@ -220,7 +220,7 @@ class CategoryServiceTest {
         void deleteFail_notExistCategory() {
             //given
             CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
-            given(categoryRepository.findByIdAndUser(categoryId, user))
+            given(categoryRepository.findByUserAndId(user, categoryId))
                     .willReturn(Optional.empty());
 
             //when

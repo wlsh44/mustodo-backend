@@ -36,7 +36,7 @@ public class TodoService {
 
     public void saveTodo(User user, NewTodoDto dto) {
         Long categoryId = dto.getCategoryId();
-        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+        Category category = categoryRepository.findByUserAndId(user, categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         saveTodo(dto, user, category);
@@ -50,7 +50,7 @@ public class TodoService {
 
     public void saveRepeatTodo(User user, NewRepeatTodoDto dto) {
         Long categoryId = dto.getCategoryId();
-        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+        Category category = categoryRepository.findByUserAndId(user, categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         RepeatMeta todoRepeat = dto.getRepeatMeta();
@@ -102,7 +102,7 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public List<TodoResponse> findByCategory(User user, Long categoryId) {
-        if (!categoryRepository.existsByIdAndUser(categoryId, user)) {
+        if (!categoryRepository.existsByUserAndId(user, categoryId)) {
             throw new CategoryNotFoundException(categoryId);
         }
         List<Todo> todoList = todoRepository.findAllByCategory_Id(categoryId);
