@@ -1,12 +1,12 @@
-package mustodo.backend.auth.domain;
+package mustodo.backend.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mustodo.backend.auth.domain.embedded.EmailAuth;
-import mustodo.backend.auth.domain.embedded.Image;
+import mustodo.backend.user.domain.embedded.EmailAuth;
+import mustodo.backend.user.domain.embedded.Image;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
