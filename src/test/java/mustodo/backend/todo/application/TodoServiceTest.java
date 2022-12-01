@@ -234,12 +234,13 @@ class TodoServiceTest {
 
     @Nested
     @DisplayName("날짜 별 조회 테스트")
-    class FindByDate {
+    class FindByDateTest {
 
         Todo todo1_20221015;
         Todo todo2_20221015;
         Todo todo3_20221015;
         Todo todo4_20221017;
+        Todo todo5_20221015;
 
         Category category2;
 
@@ -256,6 +257,7 @@ class TodoServiceTest {
             todo2_20221015 = todoRepository.save(new Todo(2L, "할 일2", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category2, user, null));
             todo3_20221015 = todoRepository.save(new Todo(3L, "할 일3", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
             todo4_20221017 = todoRepository.save(new Todo(4L, "할 일4", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 17), category, user, null));
+            todo5_20221015 = todoRepository.save(new Todo(4L, "할 일4", false, true, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
         }
 
         @Test
@@ -263,7 +265,7 @@ class TodoServiceTest {
         void success() {
             //given
             String dateString = "2022-10-15";
-            List<TodoByDateResponse> expect = TodoByDateResponse.from(List.of(todo1_20221015, todo2_20221015, todo3_20221015));
+            List<TodoByDateResponse> expect = TodoByDateResponse.from(List.of(todo1_20221015, todo2_20221015, todo3_20221015, todo5_20221015));
 
             //when
             List<TodoByDateResponse> res = todoService.findByDate(user, dateString);
