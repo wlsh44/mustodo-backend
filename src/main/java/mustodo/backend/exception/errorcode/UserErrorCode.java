@@ -1,4 +1,4 @@
-package mustodo.backend.exception.enums;
+package mustodo.backend.exception.errorcode;
 
 public enum UserErrorCode implements ErrorCode {
     DUPLICATED_EMAIL("이미 존재하는 이메일 입니다. email: %s"),

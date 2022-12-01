@@ -1,9 +1,9 @@
 package mustodo.backend.exception.todo;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.TodoErrorCode.INVALID_REPEAT_RANGE;
+import static mustodo.backend.exception.errorcode.TodoErrorCode.INVALID_REPEAT_RANGE;
 
 public class InvalidRepeatRangeException extends TodoException {
 

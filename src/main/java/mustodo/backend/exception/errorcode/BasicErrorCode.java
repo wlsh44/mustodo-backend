@@ -1,4 +1,4 @@
-package mustodo.backend.exception.enums;
+package mustodo.backend.exception.errorcode;
 
 public enum BasicErrorCode implements ErrorCode {
     INVALID_ARGUMENT_ERROR("올바르지 않은 형식입니다.");
