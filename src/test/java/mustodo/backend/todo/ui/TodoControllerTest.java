@@ -15,6 +15,7 @@ import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
+import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,14 +38,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static mustodo.backend.auth.ui.AuthController.LOGIN_SESSION_ID;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -420,6 +422,73 @@ class TodoControllerTest {
             //when then
             mockMvc.perform(get(uri, todoId)
                             .session(session))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+    }
+
+    @Nested
+    @DisplayName("할 일 수정 테스트")
+    class UpdateTest {
+
+        UpdateTodoDto dto;
+
+        @BeforeEach
+        void init() {
+            uri = "/api/todo/{todoId}";
+            dto = new UpdateTodoDto(1L, "newContent", true, LocalDateTime.now(), LocalDate.now());
+        }
+
+        @Test
+        @DisplayName("수정 성공")
+        void success() throws Exception {
+            //given
+            Long todoId = 1L;
+
+            //when then
+            mockMvc.perform(put(uri, todoId)
+                            .session(session)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(dto)))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(""));
+        }
+
+        @Test
+        @DisplayName("조회 수정 - 할 일 없음")
+        void fail_todoNotFound() throws Exception {
+            //given
+            Long todoId = 1L;
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            doThrow(e).when(todoService).update(eq(user), eq(todoId), any());
+
+            //when then
+            mockMvc.perform(put(uri, todoId)
+                            .session(session)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(dto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
+        }
+
+        @Test
+        @DisplayName("조회 수정 - 카테고리 없음")
+        void fail_categoryNotFound() throws Exception {
+            //given
+            Long todoId = 1L;
+            CategoryNotFoundException e = new CategoryNotFoundException(dto.getCategoryId());
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode());
+            doThrow(e).when(todoService).update(eq(user), eq(todoId), any(UpdateTodoDto.class));
+
+            //when then
+            mockMvc.perform(put(uri, todoId)
+                            .session(session)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(dto)))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().json(mapper.writeValueAsString(errorResponse)));
