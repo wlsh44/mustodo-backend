@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -411,13 +412,22 @@ class TodoServiceTest {
 
     @Nested
     @DisplayName("update 테스트")
+    @Transactional
     class UpdateTest {
 
         Todo todo1;
+        Category category2;
 
         @BeforeEach
         void init() {
             todo1 = todoRepository.save(new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+            category2 = Category.builder()
+                    .name("test category")
+                    .user(user)
+                    .color("#000000")
+                    .publicAccess(false)
+                    .build();
+            category2 = categoryRepository.save(category2);
         }
 
         @Test
@@ -427,8 +437,8 @@ class TodoServiceTest {
             LocalDateTime nowDateTime = LocalDateTime.now();
             LocalDate nowDate = LocalDate.now();
             String newContent = "할 일33";
-            UpdateTodoDto dto = new UpdateTodoDto(category.getId(), newContent, true, nowDateTime, nowDate);
-            Todo expect = new Todo(1L, newContent, false, true, nowDateTime, nowDate, category, user, null);
+            UpdateTodoDto dto = new UpdateTodoDto(category2.getId(), newContent, true, nowDateTime, nowDate);
+            Todo expect = new Todo(1L, newContent, false, true, nowDateTime, nowDate, category2, user, null);
 
             //when
             todoService.update(user, 1L, dto);
@@ -457,7 +467,7 @@ class TodoServiceTest {
         @DisplayName("할 일 수정 실패 - 없는 카테고리")
         void failTest_categoryNotFound() {
             //given
-            Long categoryId = 2L;
+            Long categoryId = 3L;
             UpdateTodoDto dto = new UpdateTodoDto(categoryId, "new content", true, null, null);
             CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
 
