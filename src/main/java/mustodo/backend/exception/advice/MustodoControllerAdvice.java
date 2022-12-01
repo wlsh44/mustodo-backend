@@ -2,6 +2,7 @@ package mustodo.backend.exception.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.exception.advice.dto.ErrorResponse;
+import mustodo.backend.exception.sns.SnsException;
 import mustodo.backend.exception.todo.TodoException;
 import mustodo.backend.exception.auth.AuthException;
 import mustodo.backend.exception.user.UserException;
@@ -57,6 +58,14 @@ public class MustodoControllerAdvice {
 
     @ExceptionHandler(TodoException.class)
     public ResponseEntity<ErrorResponse> todoException(TodoException e) {
+        String message = e.getMessage();
+        log.info(message);
+
+        return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(SnsException.class)
+    public ResponseEntity<ErrorResponse> snsException(SnsException e) {
         String message = e.getMessage();
         log.info(message);
 
