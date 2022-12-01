@@ -1,7 +1,7 @@
 package mustodo.backend.sns.application;
 
 import mustodo.backend.common.support.DatabaseClearer;
-import mustodo.backend.exception.sns.AlreadyFollowException;
+import mustodo.backend.exception.sns.AlreadyFollowedException;
 import mustodo.backend.exception.user.UserNotFoundException;
 import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.sns.domain.FollowRepository;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.InstanceOfAssertFactories.spliterator;
 
 @SpringBootTest
 @Transactional
@@ -98,7 +97,7 @@ class SnsServiceTest {
             //given
             Follow follow = new Follow(user1, user2);
             followRepository.save(follow);
-            AlreadyFollowException e = new AlreadyFollowException();
+            AlreadyFollowedException e = new AlreadyFollowedException();
 
             //when then
             assertThatThrownBy(() -> snsService.follow(user1, user2.getId()))

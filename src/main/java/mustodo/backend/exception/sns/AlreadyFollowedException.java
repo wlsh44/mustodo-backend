@@ -5,11 +5,11 @@ import org.springframework.http.HttpStatus;
 
 import static mustodo.backend.exception.errorcode.SnsErrorCode.ALREADY_FOLLOW_ERROR;
 
-public class AlreadyFollowException extends SnsException {
+public class AlreadyFollowedException extends SnsException {
 
     public static final ErrorCode errorCode = ALREADY_FOLLOW_ERROR;
 
-    public AlreadyFollowException() {
+    public AlreadyFollowedException() {
         super(errorCode.getErrMsg(), HttpStatus.BAD_REQUEST, errorCode);
     }
 }
