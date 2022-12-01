@@ -436,5 +436,33 @@ class TodoServiceTest {
             assertThat(res).usingRecursiveComparison()
                     .isEqualTo(expect);
         }
+
+        @Test
+        @DisplayName("할 일 수정 실패 - 없는 할 일")
+        void failTest_todoNotFound() {
+            //given
+            Long todoId = 2L;
+            UpdateTodoDto dto = new UpdateTodoDto(category.getId(), "new content", true, null, null);
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+
+            //when then
+            assertThatThrownBy(() -> todoService.update(user, todoId, dto))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+
+        @Test
+        @DisplayName("할 일 수정 실패 - 없는 카테고리")
+        void failTest_categoryNotFound() {
+            //given
+            Long categoryId = 2L;
+            UpdateTodoDto dto = new UpdateTodoDto(categoryId, "new content", true, null, null);
+            CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
+
+            //when then
+            assertThatThrownBy(() -> todoService.update(user, todo1.getId(), dto))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
     }
 }
