@@ -7,6 +7,7 @@ import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
+import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.exception.todo.CategoryNotFoundException;
 import mustodo.backend.exception.todo.InvalidRepeatRangeException;
@@ -36,7 +37,7 @@ public class TodoService {
 
     public void saveTodo(User user, NewTodoDto dto) {
         Long categoryId = dto.getCategoryId();
-        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+        Category category = categoryRepository.findByUserAndId(user, categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         saveTodo(dto, user, category);
@@ -50,13 +51,13 @@ public class TodoService {
 
     public void saveRepeatTodo(User user, NewRepeatTodoDto dto) {
         Long categoryId = dto.getCategoryId();
-        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+        Category category = categoryRepository.findByUserAndId(user, categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         RepeatMeta todoRepeat = dto.getRepeatMeta();
         validateRepeatDateRange(todoRepeat);
 
-        TodoGroup todoGroup = saveTodoGroup(todoRepeat);
+        TodoGroup todoGroup = saveTodoGroup(user, todoRepeat);
 
         List<DayOfWeek> repeatDay = todoRepeat.getRepeatDay();
         LocalDate date = todoGroup.getStartDate();
@@ -81,10 +82,11 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoGroup saveTodoGroup(RepeatMeta todoRepeat) {
+    public TodoGroup saveTodoGroup(User user, RepeatMeta todoRepeat) {
         TodoGroup todoGroup = TodoGroup.builder()
                 .startDate(todoRepeat.getStartDate())
                 .endDate(todoRepeat.getEndDate())
+                .user(user)
                 .build();
         todoGroup = todoGroupRepository.save(todoGroup);
         return todoGroup;
@@ -102,7 +104,7 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public List<TodoResponse> findByCategory(User user, Long categoryId) {
-        if (!categoryRepository.existsByIdAndUser(categoryId, user)) {
+        if (!categoryRepository.existsByUserAndId(user, categoryId)) {
             throw new CategoryNotFoundException(categoryId);
         }
         List<Todo> todoList = todoRepository.findAllByCategory_Id(categoryId);
@@ -145,5 +147,15 @@ public class TodoService {
         Todo todo = todoRepository.findByUserAndId(user, todoId)
                 .orElseThrow(() -> new TodoNotFoundException(todoId));
         return TodoDetailResponse.from(todo);
+    }
+
+    @Transactional
+    public void update(User user, Long todoId, UpdateTodoDto dto) {
+        Todo todo = todoRepository.findByUserAndId(user, todoId)
+                .orElseThrow(() -> new TodoNotFoundException(todoId));
+        Category newCategory = categoryRepository.findByUserAndId(user, dto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(dto.getCategoryId()));
+
+        todo.update(dto, newCategory);
     }
 }

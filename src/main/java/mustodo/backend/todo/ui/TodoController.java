@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
+import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.ui.resolver.Login;
 import mustodo.backend.todo.application.TodoService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -69,5 +71,10 @@ public class TodoController {
         TodoDetailResponse todoDetailResponse = todoService.findById(user, todoId);
 
         return ResponseEntity.ok(todoDetailResponse);
+    }
+
+    @PutMapping("/{todoId}")
+    public void update(@Login User user, @PathVariable Long todoId, @RequestBody UpdateTodoDto dto) {
+        todoService.update(user, todoId, dto);
     }
 }

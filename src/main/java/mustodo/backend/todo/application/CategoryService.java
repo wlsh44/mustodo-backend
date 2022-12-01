@@ -39,14 +39,14 @@ public class CategoryService {
 
     @Transactional
     public void update(User user, Long categoryId, UpdateCategoryDto dto) {
-        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+        Category category = categoryRepository.findByUserAndId(user, categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         category.update(dto);
     }
 
     public CategoryResponse find(User user, Long categoryId) {
-        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+        Category category = categoryRepository.findByUserAndId(user, categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
         return CategoryResponse.from(category);
@@ -61,7 +61,7 @@ public class CategoryService {
 
     @Transactional
     public void delete(User user, Long categoryId) {
-        Category category = categoryRepository.findByIdAndUser(categoryId, user)
+        Category category = categoryRepository.findByUserAndId(user, categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(categoryId));
         categoryRepository.delete(category);
     }

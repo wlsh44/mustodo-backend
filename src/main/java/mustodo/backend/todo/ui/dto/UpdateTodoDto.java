@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,10 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UpdateTodoDto {
 
-    @NotNull
     private Long categoryId;
 
-    @NotBlank
     private String content;
 
     private boolean dDay;
@@ -26,6 +25,5 @@ public class UpdateTodoDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime alarm;
 
-    @NotNull
-    private RepeatMeta repeatMeta;
+    private LocalDate date;
 }

@@ -6,6 +6,7 @@ import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
+import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.Role;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
@@ -140,7 +141,7 @@ class TodoServiceTest {
             LocalDate endDate = LocalDate.of(2022, 10, 15);
             NewRepeatTodoDto newTodoDto = new NewRepeatTodoDto(1L, "할 일", false, localDateTimeNow,
                     new RepeatMeta(List.of(DayOfWeek.MONDAY, DayOfWeek.SATURDAY), startDate, endDate));
-            TodoGroup todoGroup = new TodoGroup(1L, startDate, endDate);
+            TodoGroup todoGroup = new TodoGroup(1L, startDate, endDate, user);
             List<TodoGroup> expectTodoGroup = List.of(todoGroup);
             List<Todo> expectTodoList = List.of(
                     new Todo(1L, "할 일", false, false, localDateTimeNow, LocalDate.of(2022, 10, 1), category, user, todoGroup),
@@ -406,4 +407,62 @@ class TodoServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("update 테스트")
+    class UpdateTest {
+
+        Todo todo1;
+
+        @BeforeEach
+        void init() {
+            todo1 = todoRepository.save(new Todo(1L, "할 일1", false, false, LocalDateTime.now(), LocalDate.of(2022, 10, 15), category, user, null));
+        }
+
+        @Test
+        @DisplayName("할 일 수정 성공")
+        void successTest() {
+            //given
+            LocalDateTime nowDateTime = LocalDateTime.now();
+            LocalDate nowDate = LocalDate.now();
+            String newContent = "할 일33";
+            UpdateTodoDto dto = new UpdateTodoDto(category.getId(), newContent, true, nowDateTime, nowDate);
+            Todo expect = new Todo(1L, newContent, false, true, nowDateTime, nowDate, category, user, null);
+
+            //when
+            todoService.update(user, 1L, dto);
+
+            //then
+            Todo res = todoRepository.findById(1L).get();
+            assertThat(res).usingRecursiveComparison()
+                    .isEqualTo(expect);
+        }
+
+        @Test
+        @DisplayName("할 일 수정 실패 - 없는 할 일")
+        void failTest_todoNotFound() {
+            //given
+            Long todoId = 2L;
+            UpdateTodoDto dto = new UpdateTodoDto(category.getId(), "new content", true, null, null);
+            TodoNotFoundException e = new TodoNotFoundException(todoId);
+
+            //when then
+            assertThatThrownBy(() -> todoService.update(user, todoId, dto))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+
+        @Test
+        @DisplayName("할 일 수정 실패 - 없는 카테고리")
+        void failTest_categoryNotFound() {
+            //given
+            Long categoryId = 2L;
+            UpdateTodoDto dto = new UpdateTodoDto(categoryId, "new content", true, null, null);
+            CategoryNotFoundException e = new CategoryNotFoundException(categoryId);
+
+            //when then
+            assertThatThrownBy(() -> todoService.update(user, todo1.getId(), dto))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
 }
