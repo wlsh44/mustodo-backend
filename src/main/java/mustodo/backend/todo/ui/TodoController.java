@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
+import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.ui.resolver.Login;
 import mustodo.backend.todo.application.TodoService;
@@ -73,7 +74,7 @@ public class TodoController {
     }
 
     @PutMapping("/{todoId}")
-    public void update(@Login User user, @PathVariable Long todoId) {
-
+    public void update(@Login User user, @PathVariable Long todoId, @RequestBody UpdateTodoDto dto) {
+        todoService.update(user, todoId, dto);
     }
 }
