@@ -1,9 +1,9 @@
 package mustodo.backend.exception.auth;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.AuthErrorCode.UNCHECK_TERMS_AND_CONDITION;
+import static mustodo.backend.exception.errorcode.AuthErrorCode.UNCHECK_TERMS_AND_CONDITION;
 
 public class UncheckTermsAndConditionException extends AuthException {
 

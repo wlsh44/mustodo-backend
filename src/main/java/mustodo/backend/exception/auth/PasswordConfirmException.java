@@ -1,9 +1,9 @@
 package mustodo.backend.exception.auth;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.AuthErrorCode.PASSWORD_CONFIRM_FAILED;
+import static mustodo.backend.exception.errorcode.AuthErrorCode.PASSWORD_CONFIRM_FAILED;
 
 public class PasswordConfirmException extends AuthException {
 
