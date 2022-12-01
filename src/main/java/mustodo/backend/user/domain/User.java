@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.user.domain.embedded.Image;
 
@@ -16,6 +17,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -45,6 +49,12 @@ public class User {
     @Column
     private String biography;
 
+    @OneToMany(mappedBy = "follower")
+    private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "following")
+    private List<Follow> followings = new ArrayList<>();
+
     @Embedded
     private Image profile;
 
@@ -67,6 +77,3 @@ public class User {
         return emailAuth.isEmailAuth();
     }
 }
-
-
-
