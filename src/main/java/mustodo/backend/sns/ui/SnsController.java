@@ -20,4 +20,9 @@ public class SnsController {
     public void follow(@Login User user, @PathVariable Long followingId) {
         snsService.follow(user, followingId);
     }
+
+    @PostMapping("/unfollow/{followingId}")
+    public void unfollow(@Login User user, @PathVariable Long followingId) {
+        snsService.unfollow(user, followingId);
+    }
 }
