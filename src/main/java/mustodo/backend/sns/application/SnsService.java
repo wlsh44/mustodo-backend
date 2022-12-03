@@ -18,10 +18,19 @@ public class SnsService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void follow(User user, Long followerId) {
-        User follower = userRepository.findById(followerId)
-                .orElseThrow(() -> new UserNotFoundException(followerId));
-        validateFollow(user, follower);
+    public void follow(User user, Long followingId) {
+        User following = userRepository.findById(followingId)
+                .orElseThrow(() -> new UserNotFoundException(followingId));
+        validateFollow(user, following);
+        followRepository.save(new Follow(user, following));
+    }
+
+    private void validateFollow(User user, User following) {
+        if (followRepository.existsByFollowingAndFollower(user, following)) {
+            throw new AlreadyFollowedException();
+        }
+    }
+
         followRepository.save(new Follow(user, follower));
     }
 
