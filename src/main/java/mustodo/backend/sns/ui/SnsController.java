@@ -16,8 +16,8 @@ public class SnsController {
 
     private final SnsService snsService;
 
-    @PostMapping("/follow/{followerId}")
-    public void follow(@Login User user, @PathVariable Long followerId) {
-        snsService.follow(user, followerId);
+    @PostMapping("/follow/{followingId}")
+    public void follow(@Login User user, @PathVariable Long followingId) {
+        snsService.follow(user, followingId);
     }
 }
