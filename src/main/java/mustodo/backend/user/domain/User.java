@@ -50,10 +50,10 @@ public class User {
     private String biography;
 
     @OneToMany(mappedBy = "follower")
-    private List<Follow> followers = new ArrayList<>();
+    private final List<Follow> followers = new ArrayList<>();
 
     @OneToMany(mappedBy = "following")
-    private List<Follow> followings = new ArrayList<>();
+    private final List<Follow> followings = new ArrayList<>();
 
     @Embedded
     private Image profile;
