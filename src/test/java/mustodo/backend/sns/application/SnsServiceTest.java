@@ -2,6 +2,7 @@ package mustodo.backend.sns.application;
 
 import mustodo.backend.common.support.DatabaseClearer;
 import mustodo.backend.exception.sns.AlreadyFollowedException;
+import mustodo.backend.exception.sns.NotFollowingUserException;
 import mustodo.backend.exception.user.UserNotFoundException;
 import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.sns.domain.FollowRepository;
@@ -101,6 +102,38 @@ class SnsServiceTest {
 
             //when then
             assertThatThrownBy(() -> snsService.follow(user1, user2.getId()))
+                    .isInstanceOf(e.getClass())
+                    .hasMessage(e.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("unfollow 테스트")
+    class UnFollowTest {
+
+        @Test
+        @Transactional
+        @DisplayName("언팔로우 성공 테스트")
+        void successTest() {
+            //given
+            Follow save = followRepository.save(new Follow(user1, user2));
+
+            //when
+            snsService.unfollow(user1, user2.getId());
+
+            //then
+            boolean res = followRepository.findById(save.getId()).isPresent();
+            assertThat(res).isFalse();
+        }
+
+        @Test
+        @DisplayName("언팔로우 실패 - 팔로우를 안하고 있는 경우")
+        void failTest_alreadyFollowed() {
+            //given
+            NotFollowingUserException e = new NotFollowingUserException();
+
+            //when then
+            assertThatThrownBy(() -> snsService.unfollow(user1, user2.getId()))
                     .isInstanceOf(e.getClass())
                     .hasMessage(e.getMessage());
         }
