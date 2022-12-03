@@ -2,6 +2,7 @@ package mustodo.backend.sns.application;
 
 import lombok.RequiredArgsConstructor;
 import mustodo.backend.exception.sns.AlreadyFollowedException;
+import mustodo.backend.exception.sns.NotFollowingUserException;
 import mustodo.backend.exception.user.UserNotFoundException;
 import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.sns.domain.FollowRepository;
@@ -31,12 +32,10 @@ public class SnsService {
         }
     }
 
-        followRepository.save(new Follow(user, follower));
-    }
-
-    private void validateFollow(User user, User follower) {
-        if (followRepository.existsByFollowingAndFollower(user, follower)) {
-            throw new AlreadyFollowedException();
-        }
+    @Transactional
+    public void unfollow(User user, Long followingId) {
+        Follow follow = followRepository.findByFollowerAndFollowing_Id(user, followingId)
+                .orElseThrow(NotFollowingUserException::new);
+        followRepository.delete(follow);
     }
 }
