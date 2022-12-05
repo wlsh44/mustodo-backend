@@ -46,9 +46,9 @@ class SnsServiceTest {
 
     @BeforeEach
     void init() {
-        user1 = new User(1L, "test2@test.test", "test2", "test", Role.USER, "", new ArrayList<>(), new ArrayList<>(), null, new EmailAuth("123456", true));
-        user2 = new User(2L, "test1@test.test", "test", "test", Role.USER, "", new ArrayList<>(), new ArrayList<>(), null, new EmailAuth("123456", true));
-        user3 = new User(3L, "test1@test.test", "test", "test", Role.USER, "", new ArrayList<>(), new ArrayList<>(), null, new EmailAuth("123456", true));
+        user1 = new User(1L, "test2@test.test", "test2", "test", Role.USER, "", null, new EmailAuth("123456", true));
+        user2 = new User(2L, "test1@test.test", "test", "test", Role.USER, "", null, new EmailAuth("123456", true));
+        user3 = new User(3L, "test1@test.test", "test", "test", Role.USER, "", null, new EmailAuth("123456", true));
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);

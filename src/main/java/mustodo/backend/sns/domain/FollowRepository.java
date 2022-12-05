@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    boolean existsByFollowingAndFollower(User following, User follower);
+    boolean existsByFollowerAndFollowing(User following, User follower);
     @Query("select follow from Follow follow where follow.follower=:follower and follow.following.id=:followingId")
     Optional<Follow> findByFollowerAndFollowing_Id(User follower, Long followingId);
 
