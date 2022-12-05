@@ -34,7 +34,7 @@ public class SnsService {
     }
 
     private void validateFollow(User user, User following) {
-        if (followRepository.existsByFollowingAndFollower(user, following)) {
+        if (followRepository.existsByFollowerAndFollowing(user, following)) {
             throw new AlreadyFollowedException();
         }
     }
