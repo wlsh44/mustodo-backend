@@ -15,7 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 
 @Service
@@ -46,9 +48,17 @@ public class SnsService {
         followRepository.delete(follow);
     }
 
-    public FeedTodoResponse findTodoFeed(User user, Pageable pageable) {
+    public FeedTodoResponse findTodoFeed(User user, Pageable pageable, HttpServletRequest request) {
         Page<TodoFeedQueryDto> todoFeedQueryPage = followRepository.findFollowsWithTodayAchievedTodo(user, LocalDate.now(), pageable);
-        FeedTodoMapDto feedTodoMapDto = FeedTodoMapDto.from(todoFeedQueryPage);
+        String baseUrl = getBaseUrl(request);
+        FeedTodoMapDto feedTodoMapDto = FeedTodoMapDto.from(todoFeedQueryPage, baseUrl);
         return FeedTodoResponse.from(feedTodoMapDto);
+    }
+
+    private String getBaseUrl(HttpServletRequest request) {
+        return ServletUriComponentsBuilder.fromRequestUri(request)
+                .replacePath(null)
+                .build()
+                .toUriString();
     }
 }

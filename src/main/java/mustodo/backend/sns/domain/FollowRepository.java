@@ -15,7 +15,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     @Query("select follow from Follow follow where follow.follower=:follower and follow.following.id=:followingId")
     Optional<Follow> findByFollowerAndFollowing_Id(User follower, Long followingId);
 
-    @Query("select follow.following.id as userId, follow.following.name as userName, " +
+    @Query("select follow.following.id as userId, follow.following.name as userName, follow.following.profile as profile, " +
             "todo.content as todoContent, todo.category.color as categoryColor " +
             "from Follow follow " +
             "left join Todo todo " +

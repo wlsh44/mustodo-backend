@@ -13,4 +13,5 @@ import mustodo.backend.sns.application.dto.TodoFeedQueryDto;
 public class FeedTodoKey {
     private Long userId;
     private String userName;
+    private String profilePath;
 }

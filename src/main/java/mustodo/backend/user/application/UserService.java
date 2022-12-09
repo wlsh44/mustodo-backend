@@ -19,6 +19,6 @@ public class UserService {
     @Transactional
     public void updateProfileImage(User user, MultipartFile multipartFile) {
         entityManager.merge(user);
-        user.updateProfileImage(multipartFile, imageConfig.getProfile());
+        user.updateProfileImage(multipartFile, imageConfig);
     }
 }

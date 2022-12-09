@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
 public class FeedTodoMapDto {
     Map<FeedTodoKey, List<FeedTodoValue>> feedMap;
 
-    public static FeedTodoMapDto from(Page<TodoFeedQueryDto> feedPage) {
+    public static FeedTodoMapDto from(Page<TodoFeedQueryDto> feedPage, String baseUrl) {
         Map<FeedTodoKey, List<FeedTodoValue>> feedMap = new HashMap<>();
 
         feedPage.get().forEach(dto -> {
-            FeedTodoKey key = new FeedTodoKey(dto.getUserId(), dto.getUserName());
+            String profilePath = baseUrl + dto.getProfile().getFileUrl() + dto.getProfile().getFileName();
+            FeedTodoKey key = new FeedTodoKey(dto.getUserId(), dto.getUserName(), profilePath);
             FeedTodoValue value = new FeedTodoValue(dto.getTodoContent(), dto.getCategoryColor());
             feedMap.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
         });
@@ -28,7 +29,12 @@ public class FeedTodoMapDto {
 
     public List<FeedTodoDto> toFeedTodoDtoList() {
         return feedMap.entrySet().stream()
-                .map(entry -> new FeedTodoDto(entry.getKey().getUserId(), entry.getKey().getUserName(), entry.getValue()))
+                .map(entry -> new FeedTodoDto(
+                        entry.getKey().getUserId(),
+                        entry.getKey().getUserName(),
+                        entry.getKey().getProfilePath(),
+                        entry.getValue())
+                )
                 .collect(Collectors.toList());
     }
 }
