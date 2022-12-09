@@ -22,7 +22,10 @@ public class Image {
     private String fileName;
     private String fileUrl;
 
-    public static Image saveImage(MultipartFile multipartFile, String fileUrl) {
+    public static Image saveDefaultImage(ImageConfig imageConfig) {
+        return new Image(imageConfig.getDefaultImage(), imageConfig.getDefaultImage(), imageConfig.getPath());
+    }
+
         if (multipartFile.isEmpty()) {
             return null;
         }
