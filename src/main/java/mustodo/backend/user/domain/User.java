@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mustodo.backend.config.ImageConfig;
 import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.user.domain.embedded.Image;
@@ -78,7 +79,7 @@ public class User {
         return emailAuth.isEmailAuth();
     }
 
-    public void updateProfileImage(MultipartFile multipartFile, String fileUrl) {
-        this.profile = Image.saveImage(multipartFile, fileUrl);
+    public void updateProfileImage(MultipartFile multipartFile, ImageConfig imageConfig) {
+        this.profile = Image.saveImage(multipartFile, imageConfig);
     }
 }
