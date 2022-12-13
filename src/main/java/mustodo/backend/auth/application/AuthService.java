@@ -6,7 +6,6 @@ import mustodo.backend.auth.application.mail.EmailAuthSender;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
-import mustodo.backend.auth.ui.dto.UserResponse;
 import mustodo.backend.config.ImageConfig;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
@@ -24,6 +23,7 @@ import mustodo.backend.user.domain.embedded.Image;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Slf4j
 @Service
@@ -47,7 +47,8 @@ public class AuthService {
 
     private void validateAuthorizedUser(User user) {
         if (!user.isAuthorizedUser()) {
-            String emailAuthKey = emailAuthSender.sendAuthMail(user);
+//            String emailAuthKey = emailAuthSender.sendAuthMail(user);
+            String emailAuthKey = "123123";
             user.setEmailAuthKey(emailAuthKey);
             throw new NotAuthorizedException();
         }
@@ -75,7 +76,7 @@ public class AuthService {
     }
 
     @Transactional
-    public UserResponse signUp(SignUpRequestDto dto) {
+    public void signUp(SignUpRequestDto dto) {
         validateSignUpDto(dto);
 
         Image profile = Image.saveDefaultImage(imageConfig);
@@ -87,8 +88,6 @@ public class AuthService {
 
         User saveUser = userRepository.save(user);
         saveUser.setEmailAuthKey(emailAuthKey);
-
-        return UserResponse.from(saveUser);
     }
 
     private User toUserEntity(SignUpRequestDto dto, String encodedPassword, Image profile) {

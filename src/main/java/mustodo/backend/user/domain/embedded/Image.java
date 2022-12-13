@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import mustodo.backend.config.ImageConfig;
 import mustodo.backend.exception.user.ProfileImageSaveFailedException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.Embeddable;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.UUID;
 
@@ -56,5 +58,12 @@ public class Image {
     private static String extractExtWithDot(String originalFilename) {
         int idx = originalFilename.lastIndexOf(".");
         return originalFilename.substring(idx);
+    }
+
+    public static String getBaseUrl(HttpServletRequest request) {
+        return ServletUriComponentsBuilder.fromRequestUri(request)
+                .replacePath(null)
+                .build()
+                .toUriString();
     }
 }

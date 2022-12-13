@@ -8,7 +8,9 @@ import mustodo.backend.auth.ui.dto.SignUpRequestDto;
 import mustodo.backend.auth.ui.dto.UserResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.application.AuthService;
+import mustodo.backend.user.domain.embedded.Image;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,17 +32,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
-    public void login(@RequestBody @Valid LoginDto dto, HttpServletRequest request) {
+    public ResponseEntity<UserResponse> login(@RequestBody @Valid LoginDto dto, HttpServletRequest request) {
         User user = authService.login(dto);
 
         HttpSession session = request.getSession();
         session.setAttribute(LOGIN_SESSION_ID, user);
+        return ResponseEntity.ok(UserResponse.from(user, Image.getBaseUrl(request)));
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<UserResponse> signUp(@RequestBody @Valid SignUpRequestDto dto) {
-        return ResponseEntity.ok(authService.signUp(dto));
+    public void signUp(@RequestBody @Valid SignUpRequestDto dto) {
+        authService.signUp(dto);
     }
 
     @PatchMapping("/authorization")

@@ -13,7 +13,7 @@ public class UserResponse {
     private String profile;
     private String biography;
 
-    public static UserResponse from(User user) {
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getProfile().getFileUrl() + user.getProfile().getFileName(), user.getBiography());
+    public static UserResponse from(User user, String baseUrl) {
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), baseUrl + user.getProfile().getFileUrl() + user.getProfile().getFileName(), user.getBiography());
     }
 }
