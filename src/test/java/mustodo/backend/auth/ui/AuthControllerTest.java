@@ -32,7 +32,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 
 import static mustodo.backend.auth.ui.AuthController.LOGIN_SESSION_ID;
-import static mustodo.backend.exception.enums.BasicErrorCode.INVALID_ARGUMENT_ERROR;
+import static mustodo.backend.exception.errorcode.BasicErrorCode.INVALID_ARGUMENT_ERROR;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.BDDMockito.given;

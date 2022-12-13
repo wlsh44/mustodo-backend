@@ -22,8 +22,12 @@ public class TodoResponse {
 
     private boolean isAchieved;
 
+    private boolean isDDay;
+
+    private String date;
+
     public static TodoResponse from(Todo todo) {
-        return new TodoResponse(todo.getId(), todo.getContent(), todo.isAchieve());
+        return new TodoResponse(todo.getId(), todo.getContent(), todo.isAchieve(), todo.isDDay(), todo.getDate().toString());
     }
 
     public static List<TodoResponse> from(List<Todo> todoList) {

@@ -1,9 +1,9 @@
 package mustodo.backend.exception.user;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.UserErrorCode.DUPLICATED_EMAIL;
+import static mustodo.backend.exception.errorcode.UserErrorCode.DUPLICATED_EMAIL;
 
 public class EmailDuplicateException extends UserException {
 
