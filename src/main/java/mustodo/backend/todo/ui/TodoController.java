@@ -3,6 +3,7 @@ package mustodo.backend.todo.ui;
 import lombok.RequiredArgsConstructor;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
+import mustodo.backend.todo.ui.dto.TodoMonthResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
@@ -54,6 +55,13 @@ public class TodoController {
         List<TodoByDateResponse> todoResponseList = todoService.findByDate(user, date);
 
         return ResponseEntity.ok(todoResponseList);
+    }
+
+    @GetMapping("/month/{date}")
+    public ResponseEntity<List<TodoMonthResponse>> findByMonth(@Login User user, @PathVariable String date) {
+        List<TodoMonthResponse> response = todoService.findTodoMonthByDate(user, date);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{todoId}")
