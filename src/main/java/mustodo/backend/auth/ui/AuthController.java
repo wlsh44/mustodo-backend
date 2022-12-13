@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
+import mustodo.backend.auth.ui.dto.UserResponse;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.auth.application.AuthService;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,8 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    @ResponseStatus(HttpStatus.OK)
-    public void signUp(@RequestBody @Valid SignUpRequestDto dto) {
-        authService.signUp(dto);
+    public ResponseEntity<UserResponse> signUp(@RequestBody @Valid SignUpRequestDto dto) {
+        return ResponseEntity.ok(authService.signUp(dto));
     }
 
     @PatchMapping("/authorization")

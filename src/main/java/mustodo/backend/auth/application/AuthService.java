@@ -6,6 +6,7 @@ import mustodo.backend.auth.application.mail.EmailAuthSender;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
+import mustodo.backend.auth.ui.dto.UserResponse;
 import mustodo.backend.config.ImageConfig;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
@@ -74,19 +75,20 @@ public class AuthService {
     }
 
     @Transactional
-    public Long signUp(SignUpRequestDto dto) {
+    public UserResponse signUp(SignUpRequestDto dto) {
         validateSignUpDto(dto);
 
         Image profile = Image.saveDefaultImage(imageConfig);
         String encodedPassword = encodePassword(dto.getPassword());
         User user = toUserEntity(dto, encodedPassword, profile);
 
-        String emailAuthKey = emailAuthSender.sendAuthMail(user);
+//        String emailAuthKey = emailAuthSender.sendAuthMail(user);
+        String emailAuthKey = "123123";
 
         User saveUser = userRepository.save(user);
         saveUser.setEmailAuthKey(emailAuthKey);
 
-        return saveUser.getId();
+        return UserResponse.from(saveUser);
     }
 
     private User toUserEntity(SignUpRequestDto dto, String encodedPassword, Image profile) {
