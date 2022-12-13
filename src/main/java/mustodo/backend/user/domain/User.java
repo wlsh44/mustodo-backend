@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mustodo.backend.config.ImageConfig;
+import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.user.domain.embedded.Image;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -16,6 +19,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -45,6 +51,12 @@ public class User {
     @Column
     private String biography;
 
+    @OneToMany(mappedBy = "follower")
+    private final List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "following")
+    private final List<Follow> followings = new ArrayList<>();
+
     @Embedded
     private Image profile;
 
@@ -66,7 +78,8 @@ public class User {
     public boolean isAuthorizedUser() {
         return emailAuth.isEmailAuth();
     }
+
+    public void updateProfileImage(MultipartFile multipartFile, ImageConfig imageConfig) {
+        this.profile = Image.saveImage(multipartFile, imageConfig);
+    }
 }
-
-
-

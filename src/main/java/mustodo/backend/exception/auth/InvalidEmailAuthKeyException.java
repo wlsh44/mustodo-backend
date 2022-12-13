@@ -1,9 +1,9 @@
 package mustodo.backend.exception.auth;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.AuthErrorCode.INVALID_EMAIL_AUTH_KEY;
+import static mustodo.backend.exception.errorcode.AuthErrorCode.INVALID_EMAIL_AUTH_KEY;
 
 public class InvalidEmailAuthKeyException extends AuthException {
 

@@ -1,9 +1,9 @@
 package mustodo.backend.exception.auth;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.UserErrorCode.LOGIN_FAILED_ERROR;
+import static mustodo.backend.exception.errorcode.UserErrorCode.LOGIN_FAILED_ERROR;
 
 public class IdPasswordNotCorrectException extends AuthException {
 

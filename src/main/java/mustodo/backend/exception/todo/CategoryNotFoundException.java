@@ -1,9 +1,9 @@
 package mustodo.backend.exception.todo;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.TodoErrorCode.CATEGORY_NOT_FOUND;
+import static mustodo.backend.exception.errorcode.TodoErrorCode.CATEGORY_NOT_FOUND;
 
 public class CategoryNotFoundException extends TodoException {
 

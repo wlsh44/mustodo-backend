@@ -1,4 +1,4 @@
-package mustodo.backend.exception.enums;
+package mustodo.backend.exception.errorcode;
 
 public enum TodoErrorCode implements ErrorCode {
     CATEGORY_NOT_FOUND("해당 카테고리가 존재하지 않습니다. id: %d"),

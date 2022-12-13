@@ -1,9 +1,9 @@
 package mustodo.backend.exception.auth;
 
-import mustodo.backend.exception.enums.ErrorCode;
+import mustodo.backend.exception.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-import static mustodo.backend.exception.enums.AuthErrorCode.EMAIL_SEND_FAILED;
+import static mustodo.backend.exception.errorcode.AuthErrorCode.EMAIL_SEND_FAILED;
 
 public class EmailSendFailException extends AuthException {
 
