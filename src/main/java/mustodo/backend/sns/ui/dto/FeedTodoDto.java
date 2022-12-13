@@ -10,5 +10,6 @@ import java.util.List;
 public class FeedTodoDto {
     private Long userId;
     private String userName;
+    private String profilePath;
     private List<FeedTodoValue> todo;
 }

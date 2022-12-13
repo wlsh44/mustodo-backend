@@ -6,6 +6,7 @@ import mustodo.backend.auth.application.mail.EmailAuthSender;
 import mustodo.backend.auth.ui.dto.EmailAuthDto;
 import mustodo.backend.auth.ui.dto.LoginDto;
 import mustodo.backend.auth.ui.dto.SignUpRequestDto;
+import mustodo.backend.config.ImageConfig;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.user.domain.Role;
@@ -18,6 +19,7 @@ import mustodo.backend.exception.user.EmailDuplicateException;
 import mustodo.backend.exception.user.UserNameDuplicateException;
 import mustodo.backend.exception.user.UserNotFoundException;
 import mustodo.backend.user.domain.UserRepository;
+import mustodo.backend.user.domain.embedded.Image;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailAuthSender emailAuthSender;
+    private final ImageConfig imageConfig;
 
     @Transactional
     public User login(LoginDto dto) {
@@ -74,8 +77,9 @@ public class AuthService {
     public Long signUp(SignUpRequestDto dto) {
         validateSignUpDto(dto);
 
+        Image profile = Image.saveDefaultImage(imageConfig);
         String encodedPassword = encodePassword(dto.getPassword());
-        User user = toUserEntity(dto, encodedPassword);
+        User user = toUserEntity(dto, encodedPassword, profile);
 
         String emailAuthKey = emailAuthSender.sendAuthMail(user);
 
@@ -85,7 +89,7 @@ public class AuthService {
         return saveUser.getId();
     }
 
-    private User toUserEntity(SignUpRequestDto dto, String encodedPassword) {
+    private User toUserEntity(SignUpRequestDto dto, String encodedPassword, Image profile) {
         EmailAuth emailAuth = new EmailAuth(null, false);
         return User.builder()
                 .email(dto.getEmail())
@@ -93,6 +97,7 @@ public class AuthService {
                 .password(encodedPassword)
                 .role(Role.USER)
                 .emailAuth(emailAuth)
+                .profile(profile)
                 .build();
     }
 

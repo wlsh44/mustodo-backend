@@ -5,9 +5,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mustodo.backend.config.ImageConfig;
 import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.user.domain.embedded.Image;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -75,5 +77,9 @@ public class User {
 
     public boolean isAuthorizedUser() {
         return emailAuth.isEmailAuth();
+    }
+
+    public void updateProfileImage(MultipartFile multipartFile, ImageConfig imageConfig) {
+        this.profile = Image.saveImage(multipartFile, imageConfig);
     }
 }
