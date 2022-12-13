@@ -6,6 +6,7 @@ import mustodo.backend.exception.todo.TodoNotFoundException;
 import mustodo.backend.todo.ui.dto.RepeatMeta;
 import mustodo.backend.todo.ui.dto.TodoByDateResponse;
 import mustodo.backend.todo.ui.dto.TodoDetailResponse;
+import mustodo.backend.todo.ui.dto.TodoMonthResponse;
 import mustodo.backend.todo.ui.dto.TodoResponse;
 import mustodo.backend.todo.ui.dto.UpdateTodoDto;
 import mustodo.backend.user.domain.User;
@@ -24,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -157,5 +160,19 @@ public class TodoService {
                 .orElseThrow(() -> new CategoryNotFoundException(dto.getCategoryId()));
 
         todo.update(dto, newCategory);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TodoMonthResponse> findTodoMonthByDate(User user, String date) {
+        LocalDate parseDate = LocalDate.parse(date);
+        YearMonth month = YearMonth.from(parseDate);
+
+        List<Todo> todoByMonth = todoRepository.findTodoByMonth(user, month.atDay(1), month.atEndOfMonth());
+
+        return todoByMonth.stream()
+                .map(Todo::getDate)
+                .collect(Collectors.toSet()).stream()
+                .map(TodoMonthResponse::new)
+                .collect(Collectors.toList());
     }
 }
