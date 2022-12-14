@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findAllByCategory_Id(Long categoryId);
 
-    @Query("select todo from Todo todo where (todo.user=:user and todo.date=:date) or (todo.dDay=true)")
+    @Query("select todo from Todo todo where todo.user=:user and ((todo.date=:date) or (todo.dDay=true and :date <= todo.date and todo.achieve = false))")
     List<Todo> findAllByUserAndDate(User user, LocalDate date);
     Optional<Todo> findByUserAndId(User user, Long todoId);
 
@@ -24,4 +24,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             "and todo.date=:now " +
             "and todo.achieve=true")
     List<FeedTodoQueryDto> findByUserInAndDateAndAchieveTrue(List<User> users, LocalDate now);
+
+    @Query("select todo from Todo todo where todo.user=:user and :monthStart <= todo.date and todo.date <= :monthEnd")
+    List<Todo> findTodoByMonth(User user, LocalDate monthStart, LocalDate monthEnd);
 }
