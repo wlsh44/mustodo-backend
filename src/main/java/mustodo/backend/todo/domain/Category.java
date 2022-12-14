@@ -34,9 +34,6 @@ public class Category {
     @Column(length = 7)
     private String color;
 
-    @Column(name = "is_public", nullable = false)
-    private boolean publicAccess;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -44,6 +41,5 @@ public class Category {
     public void update(UpdateCategoryDto dto) {
         this.name = dto.getName();
         this.color = dto.getColor();
-        this.publicAccess = dto.isPublicAccess();
     }
 }
