@@ -8,4 +8,5 @@ public interface FeedTodoQueryDto {
     Image getProfile();
     String getTodoContent();
     String getCategoryColor();
+    String getBiography();
 }

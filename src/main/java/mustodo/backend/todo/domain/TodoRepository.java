@@ -18,12 +18,12 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findAllByUserAndDate(User user, LocalDate date);
     Optional<Todo> findByUserAndId(User user, Long todoId);
 
-    @Query("select todo.content as todoContent, todo.category.color as categoryColor, todo.user.id as userId, todo.user.name as userName, todo.user.profile as profile " +
+    @Query("select todo.content as todoContent, todo.category.color as categoryColor, todo.user.id as userId, " +
+            "todo.user.name as userName, todo.user.profile as profile, todo.user.biography as biography " +
             "from Todo todo " +
-            "where todo.user in :users " +
-            "and todo.date=:now " +
-            "and todo.achieve=true")
-    List<FeedTodoQueryDto> findByUserInAndDateAndAchieveTrue(List<User> users, LocalDate now);
+            "where todo.date=:now " +
+            "and todo.achieve=true and todo.isPublic=true")
+    List<FeedTodoQueryDto> findByTodayAchieveTrue(LocalDate now);
 
     @Query("select todo from Todo todo where todo.user=:user and :monthStart <= todo.date and todo.date <= :monthEnd")
     List<Todo> findTodoByMonth(User user, LocalDate monthStart, LocalDate monthEnd);
