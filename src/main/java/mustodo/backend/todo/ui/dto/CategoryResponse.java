@@ -17,13 +17,11 @@ public class CategoryResponse {
     private Long id;
     private String name;
     private String color;
-    private boolean isPublic;
 
     public static CategoryResponse from(Category category) {
         return new CategoryResponse(
                 category.getId(),
                 category.getName(),
-                category.getColor(),
-                category.isPublicAccess());
+                category.getColor());
     }
 }

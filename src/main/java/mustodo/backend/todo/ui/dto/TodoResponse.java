@@ -22,8 +22,20 @@ public class TodoResponse {
 
     private boolean isAchieved;
 
+    private boolean isDDay;
+
+    private boolean isPublic;
+
+    private String date;
+
+    private long groupId;
+
     public static TodoResponse from(Todo todo) {
-        return new TodoResponse(todo.getId(), todo.getContent(), todo.isAchieve());
+        long groupId = 0L;
+        if (todo.getTodoGroup() != null) {
+            groupId = todo.getTodoGroup().getId();
+        }
+        return new TodoResponse(todo.getId(), todo.getContent(), todo.isAchieve(), todo.isDDay(), todo.isPublic(), todo.getDate().toString(), groupId);
     }
 
     public static List<TodoResponse> from(List<Todo> todoList) {

@@ -29,6 +29,8 @@ public class NewTodoDto {
 
     private boolean dDay;
 
+    private boolean isPublic;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate date;
 
@@ -42,6 +44,7 @@ public class NewTodoDto {
                 .dDay(dDay)
                 .date(date)
                 .alarm(alarm)
+                .isPublic(isPublic)
                 .user(user)
                 .category(category)
                 .build();

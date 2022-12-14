@@ -8,10 +8,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class FeedTodoResponse {
-    private List<FeedTodoDto> todoFeed;
-
-    public static FeedTodoResponse from(FeedTodoMapDto map) {
-        List<FeedTodoDto> todoFeed = map.toFeedTodoDtoList();
-        return new FeedTodoResponse(todoFeed);
-    }
+    private Long userId;
+    private String userName;
+    private String profilePath;
+    private String biography;
+    private List<FeedTodoValue> todo;
 }

@@ -40,6 +40,9 @@ public class Todo {
     @Column(name = "is_dday", nullable = false)
     private boolean dDay;
 
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic;
+
     @Column(nullable = false)
     private LocalDateTime alarm;
 
