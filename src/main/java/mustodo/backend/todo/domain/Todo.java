@@ -70,6 +70,7 @@ public class Todo {
         this.dDay = dto.isDDay();
         this.alarm = dto.getAlarm();
         this.date = dto.getDate();
+        this.isPublic = dto.isAchieve();
         this.category = category;
     }
 }
