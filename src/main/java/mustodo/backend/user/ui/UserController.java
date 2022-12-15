@@ -5,8 +5,10 @@ import mustodo.backend.auth.ui.resolver.Login;
 import mustodo.backend.user.application.UserService;
 import mustodo.backend.user.domain.User;
 import mustodo.backend.user.ui.dto.MeResponse;
+import mustodo.backend.user.ui.dto.StatsResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +30,10 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<MeResponse> getMe(@Login User user) {
         return ResponseEntity.ok(userService.getMe(user));
+    }
+
+    @GetMapping("/stats/{date}")
+    public ResponseEntity<StatsResponse> findStats(@Login User user, @PathVariable String date) {
+        return ResponseEntity.ok(userService.findTodoStats(user, date));
     }
 }
