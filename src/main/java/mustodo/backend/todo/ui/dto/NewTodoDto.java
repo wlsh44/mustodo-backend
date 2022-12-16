@@ -31,7 +31,7 @@ public class NewTodoDto {
     private boolean dDay;
 
     @JsonProperty("isPublic")
-    private boolean achieve;
+    private boolean open;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate date;
@@ -46,7 +46,7 @@ public class NewTodoDto {
                 .dDay(dDay)
                 .date(date)
                 .alarm(alarm)
-                .isPublic(achieve)
+                .isPublic(open)
                 .user(user)
                 .category(category)
                 .build();
