@@ -1,6 +1,7 @@
 package mustodo.backend.todo.ui.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,8 @@ public class NewTodoDto {
 
     private boolean dDay;
 
-    private boolean isPublic;
+    @JsonProperty("isPublic")
+    private boolean open;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate date;
@@ -44,7 +46,7 @@ public class NewTodoDto {
                 .dDay(dDay)
                 .date(date)
                 .alarm(alarm)
-                .isPublic(isPublic)
+                .isPublic(open)
                 .user(user)
                 .category(category)
                 .build();

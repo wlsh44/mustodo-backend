@@ -1,6 +1,7 @@
 package mustodo.backend.todo.ui.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +38,9 @@ public class NewRepeatTodoDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime alarm;
 
+    @JsonProperty("isPublic")
+    private boolean open;
+
     @NotNull
     private RepeatMeta repeatMeta;
 
@@ -47,6 +51,7 @@ public class NewRepeatTodoDto {
                 .dDay(dDay)
                 .date(date)
                 .alarm(alarm)
+                .isPublic(open)
                 .todoGroup(todoGroup)
                 .user(user)
                 .category(category)
