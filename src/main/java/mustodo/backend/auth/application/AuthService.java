@@ -47,8 +47,7 @@ public class AuthService {
 
     private void validateAuthorizedUser(User user) {
         if (!user.isAuthorizedUser()) {
-//            String emailAuthKey = emailAuthSender.sendAuthMail(user);
-            String emailAuthKey = "123123";
+            String emailAuthKey = emailAuthSender.sendAuthMail(user);
             user.setEmailAuthKey(emailAuthKey);
             throw new NotAuthorizedException();
         }
@@ -83,8 +82,7 @@ public class AuthService {
         String encodedPassword = encodePassword(dto.getPassword());
         User user = toUserEntity(dto, encodedPassword, profile);
 
-//        String emailAuthKey = emailAuthSender.sendAuthMail(user);
-        String emailAuthKey = "123123";
+        String emailAuthKey = emailAuthSender.sendAuthMail(user);
 
         User saveUser = userRepository.save(user);
         saveUser.setEmailAuthKey(emailAuthKey);
