@@ -9,6 +9,7 @@ import mustodo.backend.config.ImageConfig;
 import mustodo.backend.sns.domain.Follow;
 import mustodo.backend.user.domain.embedded.EmailAuth;
 import mustodo.backend.user.domain.embedded.Image;
+import mustodo.backend.user.ui.dto.UpdateUserDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
@@ -81,5 +82,13 @@ public class User {
 
     public void updateProfileImage(MultipartFile multipartFile, ImageConfig imageConfig) {
         this.profile = Image.saveImage(multipartFile, imageConfig);
+    }
+
+    public void update(UpdateUserDto dto, MultipartFile multipartFile, ImageConfig imageConfig) {
+        this.name = dto.getName();
+        this.biography = dto.getBiography();
+        if (multipartFile != null) {
+            updateProfileImage(multipartFile, imageConfig);
+        }
     }
 }

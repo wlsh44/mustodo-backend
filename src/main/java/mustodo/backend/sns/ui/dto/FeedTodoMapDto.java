@@ -21,19 +21,20 @@ public class FeedTodoMapDto {
 
         todoDtoList.forEach(dto -> {
             String profilePath = baseUrl + dto.getProfile().getFileUrl() + dto.getProfile().getFileName();
-            FeedTodoKey key = new FeedTodoKey(dto.getUserId(), dto.getUserName(), profilePath);
+            FeedTodoKey key = new FeedTodoKey(dto.getUserId(), dto.getUserName(), profilePath, dto.getBiography());
             FeedTodoValue value = new FeedTodoValue(dto.getTodoContent(), dto.getCategoryColor());
             feedMap.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
         });
         return new FeedTodoMapDto(feedMap);
     }
 
-    public List<FeedTodoDto> toFeedTodoDtoList() {
+    public List<FeedTodoResponse> toResponse() {
         return feedMap.entrySet().stream()
-                .map(entry -> new FeedTodoDto(
+                .map(entry -> new FeedTodoResponse(
                         entry.getKey().getUserId(),
                         entry.getKey().getUserName(),
                         entry.getKey().getProfilePath(),
+                        entry.getKey().getBiography(),
                         entry.getValue())
                 )
                 .collect(Collectors.toList());
@@ -46,5 +47,6 @@ public class FeedTodoMapDto {
         private Long userId;
         private String userName;
         private String profilePath;
+        private String biography;
     }
 }

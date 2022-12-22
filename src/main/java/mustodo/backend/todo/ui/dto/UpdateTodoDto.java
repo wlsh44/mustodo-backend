@@ -1,6 +1,7 @@
 package mustodo.backend.todo.ui.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,4 +27,7 @@ public class UpdateTodoDto {
     private LocalDateTime alarm;
 
     private LocalDate date;
+
+    @JsonProperty("isPublic")
+    private boolean achieve;
 }

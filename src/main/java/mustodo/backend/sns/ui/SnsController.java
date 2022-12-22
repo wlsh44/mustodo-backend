@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 @RestController
@@ -34,8 +35,8 @@ public class SnsController {
     }
 
     @GetMapping("/todo")
-    public ResponseEntity<FeedTodoResponse> findTodoFeed(@Login User user, Pageable pageable, HttpServletRequest request) {
-        FeedTodoResponse response = snsService.findTodoFeed(user, pageable, request);
+    public ResponseEntity<List<FeedTodoResponse>> findTodoFeed(@Login User user, Pageable pageable, HttpServletRequest request) {
+        List<FeedTodoResponse> response = snsService.findTodoFeed(user, pageable, request);
         return ResponseEntity.ok(response);
     }
 }

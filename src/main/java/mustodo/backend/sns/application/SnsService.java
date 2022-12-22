@@ -16,7 +16,6 @@ import mustodo.backend.user.domain.embedded.Image;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -51,10 +50,9 @@ public class SnsService {
         followRepository.delete(follow);
     }
 
-    public FeedTodoResponse findTodoFeed(User user, Pageable pageable, HttpServletRequest request) {
-        List<User> followings = followRepository.findFollowingsByFollower(user, pageable);
-        List<FeedTodoQueryDto> todayAchievedTodo = todoRepository.findByUserInAndDateAndAchieveTrue(followings, LocalDate.now());
+    public List<FeedTodoResponse> findTodoFeed(User user, Pageable pageable, HttpServletRequest request) {
+        List<FeedTodoQueryDto> todayAchievedTodo = todoRepository.findByTodayAchieveTrue(LocalDate.now());
         FeedTodoMapDto feedTodoMapDto = FeedTodoMapDto.from(todayAchievedTodo, Image.getBaseUrl(request));
-        return FeedTodoResponse.from(feedTodoMapDto);
+        return feedTodoMapDto.toResponse();
     }
 }
